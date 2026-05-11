@@ -14,7 +14,6 @@ export class ResetOtp {
   private router = inject(Router);
   otp = signal('');
   email = signal(sessionStorage.getItem('oops_flow_email') ?? '');
-  devOtp = signal<string | null>(sessionStorage.getItem('oops_dev_otp'));
   loading = signal(false);
   error = signal<string | null>(null);
 

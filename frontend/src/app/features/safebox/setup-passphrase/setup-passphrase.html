@@ -1,0 +1,41 @@
+<app-header-app />
+
+<main class="page">
+  <div class="card">
+    <h1 class="title">ตั้ง Passphrase สำหรับตู้นิรภัย</h1>
+    <p class="warning">
+      ⚠️ <strong>สำคัญ:</strong> passphrase นี้ใช้เข้ารหัสข้อมูลใน Safebox<br />
+      ระบบ <strong>ไม่เก็บ</strong> passphrase — admin อ่านข้อมูลไม่ได้<br />
+      <strong>ถ้าลืม ข้อมูลกู้คืนไม่ได้!</strong>
+    </p>
+
+    <label class="field">
+      <span class="label">Passphrase (8+ ตัวอักษร)</span>
+      <input
+        type="password"
+        [ngModel]="passphrase()"
+        (ngModelChange)="passphrase.set($event)"
+        autocomplete="new-password"
+      />
+    </label>
+
+    <label class="field">
+      <span class="label">ยืนยัน passphrase อีกครั้ง</span>
+      <input
+        type="password"
+        [ngModel]="confirm()"
+        (ngModelChange)="confirm.set($event)"
+        autocomplete="new-password"
+        (keyup.enter)="submit()"
+      />
+    </label>
+
+    @if (error()) {
+      <p class="form-error">{{ error() }}</p>
+    }
+
+    <button type="button" class="btn-submit" (click)="submit()" [disabled]="loading()">
+      {{ loading() ? 'กำลังตั้งค่า...' : 'ตั้ง passphrase' }}
+    </button>
+  </div>
+</main>

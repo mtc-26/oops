@@ -1,27 +1,31 @@
 <app-header-app />
 
 <div class="layout">
-  <app-sidebar [activeCategory]="category()" />
+  <app-sidebar [activeCategory]="category() === 'all' ? null : category()" />
 
   <main class="content">
-    @if (category() === 'other') {
+    @if (loading()) {
+      <p class="loading">กำลังโหลด...</p>
+    } @else if (error()) {
+      <p class="empty">{{ error() }}</p>
+    } @else {
       <div class="grid">
         <a routerLink="/safebox/add" class="add-card" aria-label="Add new entry">
           <span class="plus">+</span>
+          <span class="add-label">เพิ่มรายการ</span>
         </a>
-      </div>
-    } @else {
-      <div class="grid">
-        @for (app of apps(); track app.id) {
-          <button type="button" class="app-card" (click)="open(app.id)">
-            <span class="logo" [style.background]="app.color">
-              {{ app.name.charAt(0).toUpperCase() }}
+
+        @for (entry of entries(); track entry.id) {
+          <button type="button" class="app-card" (click)="open(entry.id)">
+            <span class="logo" [style.background]="entry.color">
+              {{ entry.systemName.charAt(0).toUpperCase() }}
             </span>
-            <span class="name">{{ app.name }}</span>
+            <span class="name">{{ entry.systemName }}</span>
           </button>
         }
-        @if (apps().length === 0) {
-          <p class="empty">ยังไม่มีรายการในหมวด "{{ categoryLabel() }}"</p>
+
+        @if (entries().length === 0) {
+          <p class="empty">ยังไม่มีรายการในหมวด "{{ categoryLabel() }}" — กด + เพื่อเพิ่ม</p>
         }
       </div>
     }

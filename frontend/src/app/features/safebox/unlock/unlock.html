@@ -1,0 +1,26 @@
+<app-header-app />
+
+<main class="page">
+  <div class="card">
+    <h1 class="title">🔒 ปลดล็อก Safebox</h1>
+    <p class="prompt">กรอก passphrase ของคุณเพื่อเข้าถึงข้อมูล</p>
+
+    <input
+      type="password"
+      class="input"
+      placeholder="passphrase"
+      autocomplete="current-password"
+      [ngModel]="passphrase()"
+      (ngModelChange)="passphrase.set($event)"
+      (keyup.enter)="submit()"
+    />
+
+    @if (error()) {
+      <p class="form-error">{{ error() }}</p>
+    }
+
+    <button type="button" class="btn-submit" (click)="submit()" [disabled]="loading()">
+      {{ loading() ? 'กำลังปลดล็อก...' : 'ปลดล็อก' }}
+    </button>
+  </div>
+</main>

@@ -1,9 +1,12 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { HeaderApp } from '../../../shared/header-app/header-app';
 import { Sidebar } from '../../../shared/sidebar/sidebar';
-import { AppCategory, CATEGORIES, appsByCategory } from '../../../data/apps';
+import { CATEGORIES } from '../../../data/apps';
+import { VaultService, DecryptedEntry, VaultCategory } from '../../../data/vault.service';
+
+type ListCategory = VaultCategory | 'all';
 
 @Component({
   selector: 'app-safebox-list',
@@ -14,12 +17,13 @@ import { AppCategory, CATEGORIES, appsByCategory } from '../../../data/apps';
 export class List {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+  private vault = inject(VaultService);
 
   private params = toSignal(this.route.paramMap, { initialValue: this.route.snapshot.paramMap });
 
-  category = computed<AppCategory>(() => {
+  category = computed<ListCategory>(() => {
     const raw = this.params().get('category') ?? 'all';
-    const valid: AppCategory[] = [
+    const valid: ListCategory[] = [
       'all',
       'social',
       'banking',
@@ -29,14 +33,36 @@ export class List {
       'games',
       'other',
     ];
-    return valid.includes(raw as AppCategory) ? (raw as AppCategory) : 'all';
+    return valid.includes(raw as ListCategory) ? (raw as ListCategory) : 'all';
   });
 
-  apps = computed(() => appsByCategory(this.category()));
+  entries = signal<DecryptedEntry[]>([]);
+  loading = signal(false);
+  error = signal<string | null>(null);
 
   categoryLabel = computed(
     () => CATEGORIES.find((c) => c.id === this.category())?.label ?? '',
   );
+
+  constructor() {
+    effect(() => {
+      const cat = this.category();
+      this.load(cat);
+    });
+  }
+
+  private async load(cat: ListCategory) {
+    this.loading.set(true);
+    this.error.set(null);
+    try {
+      const cleanCat = cat === 'all' ? undefined : cat;
+      this.entries.set(await this.vault.list(cleanCat));
+    } catch (e: any) {
+      this.error.set(e?.error?.error ?? e?.message ?? 'API error');
+    } finally {
+      this.loading.set(false);
+    }
+  }
 
   open(id: string) {
     this.router.navigate(['/safebox/edit', id]);

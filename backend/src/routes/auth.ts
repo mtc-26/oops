@@ -19,6 +19,9 @@ export const authRouter = Router();
 
 const OTP_TTL_MIN = 5;
 const IS_DEV = process.env.NODE_ENV !== 'production';
+// Only expose OTP in response when email is NOT actually being sent (console mode).
+// When Resend is configured, OTPs go to email only — never to the client.
+const EXPOSE_DEV_OTP = IS_DEV && (process.env.EMAIL_PROVIDER ?? 'console') === 'console';
 
 function expiresAt(): Date {
   return new Date(Date.now() + OTP_TTL_MIN * 60 * 1000);
@@ -66,7 +69,7 @@ authRouter.post('/register', async (req, res) => {
   return res.json({
     ok: true,
     email: normalized,
-    ...(IS_DEV ? { devOtp: code } : {}),
+    ...(EXPOSE_DEV_OTP ? { devOtp: code } : {}),
   });
 });
 
@@ -122,7 +125,7 @@ authRouter.post('/login/request-email-otp', async (req, res) => {
   if (user.disabled) return res.status(403).json({ error: 'บัญชีถูกระงับ' });
 
   const code = await issueOtp(normalized, 'login');
-  return res.json({ ok: true, ...(IS_DEV ? { devOtp: code } : {}) });
+  return res.json({ ok: true, ...(EXPOSE_DEV_OTP ? { devOtp: code } : {}) });
 });
 
 // ─── Login member (M-OTP from Authenticator) ───────────────────────────
@@ -181,7 +184,7 @@ authRouter.post('/reset-motp/request', async (req, res) => {
   const user = await User.findOne({ email: normalized });
   if (!user) return res.status(404).json({ error: 'ไม่พบบัญชีอีเมลนี้' });
   const code = await issueOtp(normalized, 'reset_motp');
-  return res.json({ ok: true, ...(IS_DEV ? { devOtp: code } : {}) });
+  return res.json({ ok: true, ...(EXPOSE_DEV_OTP ? { devOtp: code } : {}) });
 });
 
 authRouter.post('/reset-motp/verify', async (req, res) => {

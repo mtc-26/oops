@@ -4,6 +4,7 @@ import cors from 'cors';
 import morgan from 'morgan';
 import { checkerRouter } from './routes/checker.js';
 import { authRouter } from './routes/auth.js';
+import { vaultRouter } from './routes/vault.js';
 import { connectMongo } from './db/mongo.js';
 
 const app = express();
@@ -27,6 +28,7 @@ app.get('/api/health', (_req, res) => {
 
 app.use('/api/checker', checkerRouter);
 app.use('/api/auth', authRouter);
+app.use('/api/vault', vaultRouter);
 
 app.use((_req, res) => {
   res.status(404).json({ error: 'Not Found' });

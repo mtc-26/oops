@@ -11,34 +11,50 @@
   </aside>
 
   <main class="content">
-    <div class="logo-wrap">
-      <span class="logo" [style.background]="app().color">
-        {{ app().name.charAt(0).toUpperCase() }}
-      </span>
-      <span class="app-name">{{ app().name }}</span>
-    </div>
-
-    <form class="form" (ngSubmit)="save()">
-      <label class="field">
-        <span class="label">Username</span>
-        <input name="username" placeholder="Enter unsername" ngModel />
-      </label>
-      <label class="field">
-        <span class="label">Email &amp; Phone Number</span>
-        <input name="email" placeholder="Enter email or Phone" ngModel />
-      </label>
-      <label class="field">
-        <span class="label">Password</span>
-        <input name="password" type="password" placeholder="Enter Password" ngModel />
-      </label>
-      <label class="field">
-        <span class="label">ข้อมูลสำคัญอื่นๆ ..</span>
-        <input name="other" placeholder="Enter ..." ngModel />
-      </label>
-
-      <div class="actions">
-        <button type="submit" class="btn-save">SAVE</button>
+    @if (loading()) {
+      <p class="loading">กำลังโหลด...</p>
+    } @else if (entry(); as e) {
+      <div class="logo-wrap">
+        <span class="logo" [style.background]="e.color">
+          {{ systemName().charAt(0).toUpperCase() }}
+        </span>
       </div>
-    </form>
+
+      <form class="form" (ngSubmit)="save()">
+        <label class="field">
+          <span class="label">ชื่อระบบ</span>
+          <input [ngModel]="systemName()" (ngModelChange)="systemName.set($event)" name="systemName" required />
+        </label>
+        <label class="field">
+          <span class="label">Username</span>
+          <input [ngModel]="username()" (ngModelChange)="username.set($event)" name="username" placeholder="Enter username" />
+        </label>
+        <label class="field">
+          <span class="label">Email / Phone</span>
+          <input [ngModel]="pin()" (ngModelChange)="pin.set($event)" name="pin" placeholder="Enter email or phone" />
+        </label>
+        <label class="field">
+          <span class="label">Password</span>
+          <input [ngModel]="password()" (ngModelChange)="password.set($event)" name="password" type="password" placeholder="Enter password" />
+        </label>
+        <label class="field">
+          <span class="label">ข้อมูลสำคัญอื่นๆ</span>
+          <input [ngModel]="other()" (ngModelChange)="other.set($event)" name="other" placeholder="ระบุ..." />
+        </label>
+
+        @if (error()) {
+          <p class="form-error">{{ error() }}</p>
+        }
+
+        <div class="actions">
+          <button type="button" class="btn-delete" (click)="remove()" [disabled]="saving()">ลบ</button>
+          <button type="submit" class="btn-save" [disabled]="saving()">
+            {{ saving() ? 'กำลังบันทึก...' : 'SAVE' }}
+          </button>
+        </div>
+      </form>
+    } @else {
+      <p class="loading">{{ error() ?? 'ไม่พบรายการ' }}</p>
+    }
   </main>
 </div>

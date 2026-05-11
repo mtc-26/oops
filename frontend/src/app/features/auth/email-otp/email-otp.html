@@ -5,9 +5,6 @@
     @if (email()) {
       <p class="meta">{{ email() }}</p>
     }
-    @if (devOtp()) {
-      <p class="dev-otp">(dev mode) OTP: <code>{{ devOtp() }}</code></p>
-    }
     <input
       class="otp-input"
       placeholder="Email-OTP"

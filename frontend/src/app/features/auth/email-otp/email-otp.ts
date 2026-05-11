@@ -16,7 +16,6 @@ export class EmailOtp {
   loading = signal(false);
   error = signal<string | null>(null);
   email = signal(sessionStorage.getItem('oops_flow_email') ?? '');
-  devOtp = signal<string | null>(sessionStorage.getItem('oops_dev_otp'));
 
   async submit() {
     if (!this.email()) {

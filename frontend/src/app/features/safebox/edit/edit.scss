@@ -74,17 +74,38 @@
 }
 .field input:focus { border-color: var(--color-primary); }
 
-.actions { display: flex; justify-content: center; margin-top: 24px; }
-.btn-save {
-  background: var(--color-green);
-  color: #fff;
+.actions {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 24px;
+}
+.btn-save, .btn-delete {
   border: 0;
   border-radius: 22px;
-  padding: 10px 36px;
+  padding: 10px 30px;
   font-weight: 800;
   font-family: var(--font-display);
   font-size: 0.9rem;
   letter-spacing: 1px;
   cursor: pointer;
 }
+.btn-save { background: var(--color-green); color: #fff; }
 .btn-save:hover { background: var(--color-green-hover); }
+.btn-delete { background: var(--color-red); color: #fff; }
+.btn-delete:hover { opacity: 0.85; }
+.btn-save:disabled, .btn-delete:disabled { opacity: 0.55; cursor: not-allowed; }
+
+.loading {
+  text-align: center;
+  color: #777;
+  font-size: 1rem;
+  margin-top: 40px;
+}
+
+.form-error {
+  color: var(--color-red);
+  text-align: center;
+  font-size: 0.85rem;
+  margin: 0;
+}

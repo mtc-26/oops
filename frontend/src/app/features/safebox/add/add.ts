@@ -1,8 +1,11 @@
-import { Component, signal } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, inject, signal } from '@angular/core';
+import { FormsModule, NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { HeaderApp } from '../../../shared/header-app/header-app';
 import { CATEGORIES } from '../../../data/apps';
+import { VaultService, VaultCategory } from '../../../data/vault.service';
+
+const COLOR_PALETTE = ['#1877F2', '#E50914', '#F5A623', '#28B463', '#7a4ed5', '#E91E63', '#0CAA40', '#FA4454'];
 
 @Component({
   selector: 'app-safebox-add',
@@ -11,11 +14,39 @@ import { CATEGORIES } from '../../../data/apps';
   styleUrl: './add.scss',
 })
 export class Add {
-  category = signal('');
-  categories = CATEGORIES.filter((c) => c.id !== 'all');
+  private vault = inject(VaultService);
+  private router = inject(Router);
 
-  constructor(private router: Router) {}
+  category = signal<VaultCategory>('other');
+  categories = CATEGORIES.filter((c) => c.id !== 'all') as { id: VaultCategory; label: string }[];
 
-  back() { this.router.navigateByUrl('/safebox/other'); }
-  save() { this.router.navigateByUrl('/safebox/other'); }
+  loading = signal(false);
+  error = signal<string | null>(null);
+
+  back() { history.back(); }
+
+  async save(f: NgForm) {
+    if (this.loading()) return;
+    const { systemName, username, email, password, other } = f.value;
+    if (!systemName) {
+      this.error.set('กรุณากรอกชื่อระบบ');
+      return;
+    }
+    this.loading.set(true);
+    this.error.set(null);
+    try {
+      const color = COLOR_PALETTE[Math.floor(Math.random() * COLOR_PALETTE.length)];
+      await this.vault.create({
+        systemName,
+        category: this.category(),
+        color,
+        secrets: { username, password, pin: email, other },
+      });
+      this.router.navigate(['/safebox', this.category()]);
+    } catch (e: any) {
+      this.error.set(e?.error?.error ?? e?.message ?? 'API error');
+    } finally {
+      this.loading.set(false);
+    }
+  }
 }

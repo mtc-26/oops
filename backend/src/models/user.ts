@@ -14,6 +14,11 @@ const userSchema = new Schema(
     totpVerified: { type: Boolean, default: false },
     emailVerified: { type: Boolean, default: false },
     disabled: { type: Boolean, default: false },
+
+    // Vault passphrase (Phase 3) — admin/server cannot derive the key
+    passphraseSalt: { type: String }, // base64, random 16 bytes
+    passphraseVerifier: { type: String }, // base64 ciphertext of known plaintext "OOPS_VERIFIER_V1"
+    passphraseVerifierIv: { type: String }, // base64 IV for the verifier
   },
   { timestamps: true },
 );

@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { requireLogin } from './data/auth.guards';
+import { requireVault, requireNoPassphrase, requireLocked } from './data/vault.guards';
 
 export const routes: Routes = [
   {
@@ -67,18 +68,29 @@ export const routes: Routes = [
     redirectTo: 'safebox/all',
   },
   {
+    path: 'safebox/setup-passphrase',
+    canActivate: [requireNoPassphrase],
+    loadComponent: () =>
+      import('./features/safebox/setup-passphrase/setup-passphrase').then((m) => m.SetupPassphrase),
+  },
+  {
+    path: 'safebox/unlock',
+    canActivate: [requireLocked],
+    loadComponent: () => import('./features/safebox/unlock/unlock').then((m) => m.Unlock),
+  },
+  {
     path: 'safebox/add',
-    canActivate: [requireLogin],
+    canActivate: [requireVault],
     loadComponent: () => import('./features/safebox/add/add').then((m) => m.Add),
   },
   {
     path: 'safebox/edit/:id',
-    canActivate: [requireLogin],
+    canActivate: [requireVault],
     loadComponent: () => import('./features/safebox/edit/edit').then((m) => m.Edit),
   },
   {
     path: 'safebox/:category',
-    canActivate: [requireLogin],
+    canActivate: [requireVault],
     loadComponent: () => import('./features/safebox/list/list').then((m) => m.List),
   },
   { path: '**', redirectTo: '' },
