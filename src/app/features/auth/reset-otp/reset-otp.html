@@ -1,0 +1,14 @@
+<main class="page">
+  <div class="card">
+    <h2 class="heading">Reset M-OTP</h2>
+    <h1 class="logo">OOPS!</h1>
+    <p class="prompt">กรอกรหัส OTP</p>
+    <input
+      class="input"
+      placeholder="Enter OTP"
+      [ngModel]="otp()"
+      (ngModelChange)="otp.set($event)"
+    />
+    <button class="btn-submit" (click)="submit()">submit</button>
+  </div>
+</main>

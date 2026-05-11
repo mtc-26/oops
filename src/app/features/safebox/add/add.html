@@ -1,0 +1,50 @@
+<app-header-app />
+
+<div class="layout">
+  <aside class="back-pane">
+    <button type="button" class="back-btn" (click)="back()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="15 18 9 12 15 6" />
+      </svg>
+      <span>ย้อนกลับ</span>
+    </button>
+  </aside>
+
+  <main class="content">
+    <form class="form" (ngSubmit)="save()">
+      <label class="field">
+        <span class="label">ชื่อระบบ</span>
+        <input name="systemName" placeholder="Enter name" ngModel />
+      </label>
+      <label class="field">
+        <span class="label">Username</span>
+        <input name="username" placeholder="Enter username" ngModel />
+      </label>
+      <label class="field">
+        <span class="label">Email &amp; Phone Number</span>
+        <input name="email" placeholder="Enter email or Phone" ngModel />
+      </label>
+      <label class="field">
+        <span class="label">Password</span>
+        <input name="password" type="password" placeholder="Enter Password" ngModel />
+      </label>
+      <label class="field">
+        <span class="label">ข้อมูลสำคัญอื่นๆ ..</span>
+        <input name="other" placeholder="Enter ..." ngModel />
+      </label>
+      <label class="field">
+        <span class="label">หมวดหมู่</span>
+        <select [ngModel]="category()" (ngModelChange)="category.set($event)" name="category">
+          <option value="" disabled>เลือกหมวดหมู่</option>
+          @for (c of categories; track c.id) {
+            <option [value]="c.id">{{ c.label }}</option>
+          }
+        </select>
+      </label>
+
+      <div class="actions">
+        <button type="submit" class="btn-save">SAVE</button>
+      </div>
+    </form>
+  </main>
+</div>

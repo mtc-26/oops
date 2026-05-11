@@ -1,0 +1,59 @@
+:host { display: block; background: var(--color-bg-dark); min-height: 100vh; }
+
+.page {
+  display: flex; align-items: center; justify-content: center;
+  min-height: 100vh; padding: 32px;
+}
+
+.card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 50px 70px;
+  max-width: 460px;
+  width: 100%;
+  text-align: center;
+  color: #1a1a1a;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.logo {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 3rem;
+  color: var(--color-orange);
+  margin: 0 0 30px;
+  letter-spacing: -1px;
+}
+
+.prompt {
+  font-size: 0.95rem;
+  color: #1a1a1a;
+  margin: 0 0 30px;
+}
+
+.otp-input {
+  width: 100%;
+  background: #DEE3F6;
+  border: 0;
+  border-radius: 22px;
+  padding: 12px 22px;
+  font-size: 1rem;
+  outline: none;
+  margin-bottom: 30px;
+  color: #1a1a1a;
+}
+.otp-input::placeholder { color: #98a0b8; }
+
+.btn-submit {
+  background: var(--color-green);
+  color: #fff;
+  border: 0;
+  border-radius: 24px;
+  padding: 10px 32px;
+  font-weight: 800;
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  cursor: pointer;
+  letter-spacing: 1px;
+}
+.btn-submit:hover { background: var(--color-green-hover); }

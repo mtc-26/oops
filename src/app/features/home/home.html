@@ -1,0 +1,68 @@
+<app-header-public />
+
+<main class="page">
+  <div class="hero">
+    <div class="lock-icon" aria-hidden="true">
+      <svg viewBox="0 0 200 200" width="160" height="160">
+        <rect x="40" y="90" width="100" height="80" rx="10" fill="#F4D71F" stroke="#1a1a1a" stroke-width="6"/>
+        <path d="M55 90 V70 a45 45 0 0 1 80 0 V90" fill="none" stroke="#B0B0B0" stroke-width="14" stroke-linecap="round"/>
+        <circle cx="90" cy="125" r="8" fill="#1a1a1a"/>
+        <rect x="86" y="130" width="8" height="20" fill="#1a1a1a"/>
+        <g transform="translate(110,55) rotate(25)">
+          <circle cx="0" cy="0" r="18" fill="#D2691E" stroke="#1a1a1a" stroke-width="4"/>
+          <circle cx="0" cy="0" r="6" fill="#fff"/>
+          <rect x="-3" y="14" width="6" height="60" fill="#D2691E" stroke="#1a1a1a" stroke-width="4"/>
+          <rect x="3" y="55" width="12" height="6" fill="#D2691E" stroke="#1a1a1a" stroke-width="4"/>
+          <rect x="3" y="65" width="8" height="6" fill="#D2691E" stroke="#1a1a1a" stroke-width="4"/>
+        </g>
+      </svg>
+    </div>
+
+    <h1 class="title">Organized Online Password Safe</h1>
+
+    <div class="check-row">
+      <input
+        type="password"
+        class="pw-input"
+        placeholder="Enter your password"
+        [ngModel]="password()"
+        (ngModelChange)="password.set($event)"
+        (keyup.enter)="check()"
+      />
+      <button type="button" class="btn-check" (click)="check()">Check password</button>
+    </div>
+
+    @if (result() === 'unsafe') {
+      <p class="result unsafe">
+        รหัสผ่านของคุณไม่ปลอดภัย!<br />กรุณาเปลี่ยนรหัสผ่าน
+      </p>
+    } @else if (result() === 'safe') {
+      <p class="result safe">รหัสผ่านของคุณปลอดภัย!</p>
+    }
+
+    <div class="actions">
+      <div class="action-col">
+        <a routerLink="/checker/dictionary" class="action-btn">ตรวจสอบด้วยพจนานุกรม</a>
+        @if (result() === 'unsafe') {
+          <p class="action-info">พบรหัสผ่านของคุณใน<br />พจนานุกรม</p>
+        } @else if (result() === 'safe') {
+          <p class="action-info">พบรหัสผ่านของคุณใน<br />พจนานุกรม</p>
+        }
+      </div>
+      <div class="action-col">
+        <a routerLink="/checker/entropy" class="action-btn">ตรวจสอบค่า Entropy</a>
+        @if (result() === 'unsafe') {
+          <p class="action-info">ค่า Entropy : 14</p>
+        } @else if (result() === 'safe') {
+          <p class="action-info">ค่า Entropy : 54</p>
+        }
+      </div>
+      <div class="action-col">
+        <a routerLink="/checker/gpu-attack" class="action-btn">GPU Attack</a>
+        @if (result() !== 'idle') {
+          <p class="action-info">ใช้ระยะเวลาในการโจมตี 1 ชั่วโมง</p>
+        }
+      </div>
+    </div>
+  </div>
+</main>

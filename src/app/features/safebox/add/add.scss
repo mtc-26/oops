@@ -1,0 +1,12 @@
+@use '../edit/edit.scss';
+
+select {
+  border: 1px solid #c0c4cb;
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 0.95rem;
+  font-family: var(--font-body);
+  outline: none;
+  background: #DEE3F6;
+  color: #1a1a1a;
+}

@@ -1,0 +1,29 @@
+<app-header-app />
+
+<div class="layout">
+  <app-sidebar [activeCategory]="category()" />
+
+  <main class="content">
+    @if (category() === 'other') {
+      <div class="grid">
+        <a routerLink="/safebox/add" class="add-card" aria-label="Add new entry">
+          <span class="plus">+</span>
+        </a>
+      </div>
+    } @else {
+      <div class="grid">
+        @for (app of apps(); track app.id) {
+          <button type="button" class="app-card" (click)="open(app.id)">
+            <span class="logo" [style.background]="app.color">
+              {{ app.name.charAt(0).toUpperCase() }}
+            </span>
+            <span class="name">{{ app.name }}</span>
+          </button>
+        }
+        @if (apps().length === 0) {
+          <p class="empty">ยังไม่มีรายการในหมวด "{{ categoryLabel() }}"</p>
+        }
+      </div>
+    }
+  </main>
+</div>

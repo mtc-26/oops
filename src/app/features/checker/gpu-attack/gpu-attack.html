@@ -1,0 +1,39 @@
+<app-header-public />
+
+<main class="page">
+  <h1 class="title">ตรวจสอบการถูกโจมตีด้วย GPU Attack</h1>
+  <p class="note">** กรุณาเลือกรุ่น GPU เพื่อตรวจสอบระยะเวลาการถูกโจมตี **</p>
+
+  <div class="form">
+    <div class="input-row">
+      <input
+        type="password"
+        class="pw-input"
+        placeholder="Enter your password"
+        [ngModel]="password()"
+        (ngModelChange)="password.set($event)"
+      />
+      <div class="gpu-list">
+        @for (g of gpus; track g) {
+          <button
+            type="button"
+            class="gpu-btn"
+            [class.active]="gpu() === g"
+            (click)="gpu.set(g)"
+          >{{ g }}</button>
+        }
+      </div>
+    </div>
+
+    <button type="button" class="btn-orange" (click)="check()">Check password</button>
+
+    @if (checked() && password()) {
+      <p class="result" [class.safe]="result().safe" [class.unsafe]="!result().safe">
+        ระยะเวลาในการถูกโจมตี : {{ result().time }}
+      </p>
+      @if (!result().safe) {
+        <p class="info">กรุณาเปลี่ยนรหัสผ่านเพื่อความปลอดภัย</p>
+      }
+    }
+  </div>
+</main>

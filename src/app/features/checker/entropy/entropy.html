@@ -1,0 +1,25 @@
+<app-header-public />
+
+<main class="page">
+  <h1 class="title">Entropy</h1>
+  <p class="note">** กรอกรหัสผ่านของคุณเพื่อคำนวณค่า Entropy **</p>
+
+  <input
+    type="password"
+    class="pw-input"
+    placeholder="Enter your password"
+    [ngModel]="password()"
+    (ngModelChange)="password.set($event)"
+    (keyup.enter)="check()"
+  />
+
+  <button type="button" class="btn-orange" (click)="check()">Check password</button>
+
+  @if (checked() && password()) {
+    <p class="result" [class.safe]="level().good" [class.unsafe]="!level().good">
+      ค่า Entropy ของคุณคือ {{ entropyValue() }}
+    </p>
+    <p class="info">ความปลอดภัยของรหัสผ่าน : {{ level().label }}</p>
+    <p class="info">กรุณาเปลี่ยนรหัสผ่านเพื่อความปลอดภัยสูงสุดของคุณ</p>
+  }
+</main>

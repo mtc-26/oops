@@ -1,0 +1,25 @@
+<header class="header">
+  <a routerLink="/" class="brand">
+    <app-oops-logo />
+  </a>
+
+  <nav class="nav">
+    <a routerLink="/safebox" class="nav-link">Safebox</a>
+
+    @if (!auth.isLoggedIn()) {
+      <a routerLink="/register" class="nav-link">Register</a>
+      <a routerLink="/login" class="nav-link">Log-in</a>
+    } @else {
+      <a routerLink="/safebox" class="user">
+        <span class="avatar">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
+            <circle cx="12" cy="12" r="11" fill="none" stroke="currentColor" stroke-width="1.5"/>
+            <circle cx="12" cy="9" r="3" />
+            <path d="M5 19a7 7 0 0 1 14 0" stroke="currentColor" stroke-width="1.5" fill="none" />
+          </svg>
+        </span>
+        <span class="user-label">User</span>
+      </a>
+    }
+  </nav>
+</header>

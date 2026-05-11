@@ -1,0 +1,112 @@
+:host { display: block; background: var(--color-bg-dark); min-height: 100vh; }
+
+.page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 32px;
+}
+
+.card {
+  display: grid;
+  grid-template-columns: 1fr 1.3fr;
+  width: 100%;
+  max-width: 900px;
+  border-radius: 18px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.welcome {
+  background: var(--color-primary);
+  color: #fff;
+  padding: 50px 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.welcome-icon { margin-bottom: 18px; }
+
+.hello {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 2rem;
+  margin: 0 0 16px;
+}
+
+.welcome-text {
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: rgba(255,255,255,0.95);
+  margin: 0;
+}
+
+.form {
+  padding: 50px 50px;
+  display: flex;
+  flex-direction: column;
+  color: #1a1a1a;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.9rem;
+  color: var(--color-primary);
+  margin: 0 0 30px;
+  text-align: center;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 16px;
+}
+.field .label {
+  font-size: 0.85rem;
+  color: #1a1a1a;
+  margin-bottom: 6px;
+}
+.field input {
+  border: 0;
+  border-bottom: 1px solid #c0c4cb;
+  padding: 8px 4px;
+  font-size: 1rem;
+  outline: none;
+  background: transparent;
+}
+.field input:focus { border-color: var(--color-primary); }
+
+.captcha {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 14px 0 24px;
+  font-size: 0.95rem;
+  color: #555;
+}
+.captcha input { width: 18px; height: 18px; }
+
+.btn-submit {
+  align-self: center;
+  background: var(--color-primary);
+  color: #fff;
+  border: 0;
+  border-radius: 28px;
+  padding: 12px 50px;
+  font-weight: 800;
+  font-family: var(--font-display);
+  letter-spacing: 1px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+.btn-submit:hover { background: var(--color-primary-hover); }
+
+@media (max-width: 720px) {
+  .card { grid-template-columns: 1fr; }
+}

@@ -1,0 +1,18 @@
+<main class="page">
+  <div class="card">
+    <h2 class="heading">Reset M-OTP</h2>
+    <h1 class="logo">OOPS!</h1>
+
+    <p class="prompt">กรุณากรอกอีเมลของคุณ เราจะส่งรหัสในการรีเซ็ตไปที่อีเมลของคุณ</p>
+
+    <input
+      class="input"
+      placeholder="Enter email"
+      [ngModel]="email()"
+      (ngModelChange)="email.set($event)"
+    />
+    <button class="btn-submit" (click)="submit()">submit</button>
+
+    <a routerLink="/login" class="link">Forget email</a>
+  </div>
+</main>

@@ -1,0 +1,15 @@
+<main class="page">
+  <form class="card" (ngSubmit)="submit()">
+    <h2 class="heading">ติดต่อแอดมิน</h2>
+    <h1 class="logo">OOPS!</h1>
+    <p class="prompt">กรุณากรอกข้อมูลต่อไปนี้ให้ครบถ้วนเพื่อทำการกู้คืนรหัส</p>
+
+    <label class="field"><span>Full Name :</span><input name="name" ngModel /></label>
+    <label class="field"><span>Username :</span><input name="username" ngModel /></label>
+    <label class="field"><span>Email :</span><input name="email" type="email" ngModel /></label>
+    <label class="field"><span>Phone :</span><input name="phone" type="tel" ngModel /></label>
+    <label class="field"><span>Address :</span><input name="address" ngModel /></label>
+
+    <button type="submit" class="btn-submit">submit</button>
+  </form>
+</main>

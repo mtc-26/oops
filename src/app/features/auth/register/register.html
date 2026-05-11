@@ -1,0 +1,47 @@
+<main class="page">
+  <div class="card">
+    <aside class="welcome">
+      <div class="welcome-icon" aria-hidden="true">
+        <svg viewBox="0 0 200 200" width="180" height="180">
+          <rect x="30" y="80" width="100" height="90" rx="10" fill="#F4D71F" stroke="#1a1a1a" stroke-width="6"/>
+          <path d="M50 80 V60 a40 40 0 0 1 70 0 V80" fill="none" stroke="#B0B0B0" stroke-width="12" stroke-linecap="round"/>
+          <circle cx="80" cy="120" r="8" fill="#1a1a1a"/>
+          <rect x="76" y="124" width="8" height="18" fill="#1a1a1a"/>
+          <rect x="115" y="85" width="60" height="105" rx="8" fill="#5DADE2" stroke="#1a1a1a" stroke-width="4"/>
+          <rect x="124" y="98" width="42" height="65" fill="#fff"/>
+          <circle cx="145" cy="178" r="4" fill="#1a1a1a"/>
+          <path d="M150 105 a15 15 0 0 1 15 15" stroke="#1a1a1a" stroke-width="3" fill="none"/>
+        </svg>
+      </div>
+      <h2 class="hello">Welcome!</h2>
+      <p class="welcome-text">
+        Welcome to the OOPS! website. Please fill in your details<br />
+        completely to become one of our members.
+      </p>
+    </aside>
+
+    <form class="form" (ngSubmit)="submit()" #f="ngForm">
+      <h1 class="title">Crreate Account</h1>
+
+      <label class="field">
+        <span class="label">Full Name :</span>
+        <input type="text" name="fullName" ngModel />
+      </label>
+      <label class="field">
+        <span class="label">Email :</span>
+        <input type="email" name="email" ngModel />
+      </label>
+      <label class="field">
+        <span class="label">Phone :</span>
+        <input type="tel" name="phone" ngModel />
+      </label>
+
+      <label class="captcha">
+        <input type="checkbox" name="robot" ngModel />
+        <span>I'm not robot</span>
+      </label>
+
+      <button type="submit" class="btn-submit">SIGN UP</button>
+    </form>
+  </div>
+</main>

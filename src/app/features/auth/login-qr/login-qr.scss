@@ -1,0 +1,57 @@
+:host { display: block; background: var(--color-bg-dark); min-height: 100vh; }
+
+.page {
+  display: flex; align-items: center; justify-content: center;
+  min-height: 100vh; padding: 32px;
+}
+
+.card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 30px 60px 40px;
+  text-align: center;
+  color: #1a1a1a;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  max-width: 460px;
+  width: 100%;
+}
+
+.heading {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.3rem;
+  margin: 0 0 8px;
+}
+
+.logo {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 3rem;
+  color: var(--color-orange);
+  margin: 0 0 20px;
+  letter-spacing: -1px;
+}
+
+.prompt {
+  font-size: 0.85rem;
+  color: #1a1a1a;
+  margin: 4px 0;
+}
+
+.qr {
+  display: flex;
+  justify-content: center;
+  margin: 24px 0;
+}
+
+.btn-back {
+  display: inline-block;
+  background: var(--color-primary);
+  color: #fff;
+  border-radius: 24px;
+  padding: 10px 26px;
+  font-size: 0.9rem;
+  font-family: var(--font-display);
+  font-weight: 700;
+}
+.btn-back:hover { background: var(--color-primary-hover); }

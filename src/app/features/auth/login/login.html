@@ -1,0 +1,29 @@
+<main class="page">
+  <div class="card">
+    <h2 class="heading">Log-in</h2>
+    <h1 class="logo">OOPS!</h1>
+
+    <input
+      class="input"
+      placeholder="Enter email"
+      [ngModel]="email()"
+      (ngModelChange)="email.set($event)"
+    />
+    <input
+      class="input"
+      placeholder="M-OTP"
+      [ngModel]="motp()"
+      (ngModelChange)="motp.set($event)"
+    />
+    <a class="link-row" (click)="requestEmailOtp()" routerLink="/register/email-otp">Request Email-OTP</a>
+
+    <div class="actions">
+      <button type="button" class="btn-submit" (click)="submit()">SUBMIT</button>
+    </div>
+
+    <div class="links">
+      <a routerLink="/reset/email">Forgot M-OTP?</a>
+      <a routerLink="/contact-admin">Contact admin</a>
+    </div>
+  </div>
+</main>

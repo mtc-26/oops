@@ -1,0 +1,120 @@
+:host {
+  display: block;
+  background: var(--color-bg-dark);
+  min-height: 100vh;
+}
+
+.page {
+  padding: 40px 24px 80px;
+}
+
+.hero {
+  max-width: 920px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.lock-icon {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.title {
+  color: var(--color-yellow);
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 2.6rem;
+  margin: 0 0 36px;
+  letter-spacing: 0.5px;
+}
+
+.check-row {
+  display: flex;
+  max-width: 720px;
+  margin: 0 auto 18px;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.pw-input {
+  flex: 1;
+  padding: 16px 20px;
+  font-size: 1.05rem;
+  border: 0;
+  background: #f5f6f8;
+  color: #333;
+  outline: none;
+}
+.pw-input::placeholder {
+  color: #b8bcc4;
+  font-style: italic;
+}
+
+.btn-check {
+  background: var(--color-green);
+  color: #fff;
+  border: 0;
+  padding: 0 28px;
+  font-weight: 700;
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  white-space: nowrap;
+  transition: background 0.15s ease;
+}
+.btn-check:hover { background: var(--color-green-hover); }
+
+.result {
+  font-weight: 700;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  margin: 20px 0 14px;
+  line-height: 1.5;
+}
+.result.unsafe { color: var(--color-red); }
+.result.safe { color: var(--color-green); }
+
+.actions {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 36px;
+  margin-top: 26px;
+  max-width: 760px;
+  margin-inline: auto;
+}
+
+.action-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+}
+
+.action-btn {
+  background: var(--color-gray-btn);
+  color: #fff;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-family: var(--font-display);
+  text-align: center;
+  width: 100%;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  border: 0;
+}
+.action-btn:hover { background: #5e6878; }
+
+.action-info {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #fff;
+  text-align: center;
+  line-height: 1.4;
+}
+
+@media (max-width: 720px) {
+  .actions { grid-template-columns: 1fr; gap: 18px; }
+  .title { font-size: 1.9rem; }
+}

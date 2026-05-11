@@ -1,0 +1,60 @@
+.header {
+  background: var(--color-primary);
+  color: #fff;
+  padding: 0 32px;
+  height: 68px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.brand {
+  --logo-size: 1.75rem;
+  display: flex;
+  align-items: center;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 36px;
+}
+
+.nav-link {
+  font-size: 1.4rem;
+  font-weight: 400;
+  color: #fff;
+  font-family: var(--font-display);
+  letter-spacing: 0.2px;
+  transition: opacity 0.15s ease;
+}
+.nav-link:hover {
+  opacity: 0.85;
+}
+
+.user {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #1a2a48;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+}
+.avatar svg {
+  width: 28px;
+  height: 28px;
+}
+
+.user-label {
+  font-size: 1.4rem;
+  font-family: var(--font-display);
+  color: #fff;
+}

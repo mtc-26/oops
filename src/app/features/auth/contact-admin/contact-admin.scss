@@ -1,0 +1,73 @@
+:host { display: block; background: var(--color-bg-dark); min-height: 100vh; }
+
+.page {
+  display: flex; align-items: center; justify-content: center;
+  min-height: 100vh; padding: 32px;
+}
+
+.card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 40px 70px 50px;
+  text-align: center;
+  color: #1a1a1a;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  max-width: 620px;
+  width: 100%;
+}
+
+.heading {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.6rem;
+  margin: 0 0 4px;
+}
+
+.logo {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 2.6rem;
+  color: var(--color-orange);
+  margin: 0 0 18px;
+  letter-spacing: -1px;
+}
+
+.prompt {
+  font-size: 0.85rem;
+  color: #1a1a1a;
+  margin: 0 0 24px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  margin-bottom: 16px;
+}
+.field span {
+  font-size: 0.85rem;
+  color: #1a1a1a;
+  margin-bottom: 4px;
+}
+.field input {
+  border: 0;
+  border-bottom: 1px solid #c0c4cb;
+  padding: 6px 4px;
+  font-size: 0.95rem;
+  outline: none;
+  background: transparent;
+}
+
+.btn-submit {
+  background: var(--color-green);
+  color: #fff;
+  border: 0;
+  border-radius: 22px;
+  padding: 8px 26px;
+  font-weight: 700;
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  cursor: pointer;
+  margin-top: 14px;
+}
+.btn-submit:hover { background: var(--color-green-hover); }

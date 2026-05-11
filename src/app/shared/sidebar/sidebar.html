@@ -1,0 +1,13 @@
+<aside class="sidebar">
+  <a routerLink="/" class="item">หน้าแรก</a>
+  <a routerLink="/checker/dictionary" class="item">ตรวจสอบรหัสผ่าน</a>
+
+  @for (cat of categories; track cat.id) {
+    <a
+      [routerLink]="['/safebox', cat.id]"
+      routerLinkActive="active"
+      class="item"
+      [class.active]="activeCategory() === cat.id"
+    >{{ cat.label }}</a>
+  }
+</aside>

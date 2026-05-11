@@ -1,0 +1,36 @@
+<main class="page">
+  <div class="card">
+    <h2 class="heading">Log-in</h2>
+    <h1 class="logo">OOPS!</h1>
+
+    <p class="prompt">กรุณาเชื่อมต่ออีเมลนี้กับแอปพลิเคชัน Authrnticator</p>
+    <p class="prompt">เพื่อรับ M-OTP</p>
+
+    <div class="qr" aria-label="QR code">
+      <svg viewBox="0 0 200 200" width="180" height="180">
+        @for (i of [0,1,2,3,4,5,6,7,8,9,10,11,12,13]; track i) {
+          @for (j of [0,1,2,3,4,5,6,7,8,9,10,11,12,13]; track j) {
+            <rect
+              [attr.x]="i*14"
+              [attr.y]="j*14"
+              width="12"
+              height="12"
+              [attr.fill]="((i*7+j*3+i*j)%3)===0 ? '#000' : '#fff'"
+            />
+          }
+        }
+        <rect x="0" y="0" width="50" height="50" fill="#fff"/>
+        <rect x="5" y="5" width="40" height="40" stroke="#000" stroke-width="6" fill="none"/>
+        <rect x="15" y="15" width="20" height="20" fill="#000"/>
+        <rect x="150" y="0" width="50" height="50" fill="#fff"/>
+        <rect x="155" y="5" width="40" height="40" stroke="#000" stroke-width="6" fill="none"/>
+        <rect x="165" y="15" width="20" height="20" fill="#000"/>
+        <rect x="0" y="150" width="50" height="50" fill="#fff"/>
+        <rect x="5" y="155" width="40" height="40" stroke="#000" stroke-width="6" fill="none"/>
+        <rect x="15" y="165" width="20" height="20" fill="#000"/>
+      </svg>
+    </div>
+
+    <a routerLink="/" class="btn-back">กลับไปหน้าแรก</a>
+  </div>
+</main>

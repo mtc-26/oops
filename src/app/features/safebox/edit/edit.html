@@ -1,0 +1,44 @@
+<app-header-app />
+
+<div class="layout">
+  <aside class="back-pane">
+    <button type="button" class="back-btn" (click)="back()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="15 18 9 12 15 6" />
+      </svg>
+      <span>ย้อนกลับ</span>
+    </button>
+  </aside>
+
+  <main class="content">
+    <div class="logo-wrap">
+      <span class="logo" [style.background]="app().color">
+        {{ app().name.charAt(0).toUpperCase() }}
+      </span>
+      <span class="app-name">{{ app().name }}</span>
+    </div>
+
+    <form class="form" (ngSubmit)="save()">
+      <label class="field">
+        <span class="label">Username</span>
+        <input name="username" placeholder="Enter unsername" ngModel />
+      </label>
+      <label class="field">
+        <span class="label">Email &amp; Phone Number</span>
+        <input name="email" placeholder="Enter email or Phone" ngModel />
+      </label>
+      <label class="field">
+        <span class="label">Password</span>
+        <input name="password" type="password" placeholder="Enter Password" ngModel />
+      </label>
+      <label class="field">
+        <span class="label">ข้อมูลสำคัญอื่นๆ ..</span>
+        <input name="other" placeholder="Enter ..." ngModel />
+      </label>
+
+      <div class="actions">
+        <button type="submit" class="btn-save">SAVE</button>
+      </div>
+    </form>
+  </main>
+</div>
