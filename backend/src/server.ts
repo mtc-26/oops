@@ -1,4 +1,5 @@
 import 'dotenv/config';
+import 'express-async-errors';
 import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
@@ -36,7 +37,16 @@ app.use((_req, res) => {
 
 app.use((err: Error, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
   console.error(err);
-  res.status(500).json({ error: err.message });
+  // Translate known errors to user-friendly messages
+  let userMessage = err.message;
+  if (/Resend send failed: 403/.test(err.message)) {
+    const match = err.message.match(/your own email address \(([^)]+)\)/);
+    const allowedEmail = match?.[1] ?? '(unknown)';
+    userMessage = `ส่งอีเมลไม่ได้: Resend (free tier) อนุญาตให้ส่งไปแค่ ${allowedEmail} เท่านั้น — กรุณา register ด้วยอีเมลนี้`;
+  } else if (/Resend send failed/.test(err.message)) {
+    userMessage = 'ส่งอีเมลไม่ได้ ลองใหม่อีกครั้ง';
+  }
+  res.status(500).json({ error: userMessage });
 });
 
 const port = Number(process.env.PORT) || 3100;
