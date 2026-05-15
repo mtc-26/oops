@@ -42,7 +42,7 @@ export class Login {
       } else {
         await this.auth.loginMember(this.email(), this.motp());
       }
-      this.router.navigateByUrl('/safebox/all');
+      this.router.navigateByUrl('/safebox');
     } catch (e: any) {
       this.error.set(e?.error?.error ?? e?.message ?? 'API error');
     } finally {

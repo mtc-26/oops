@@ -10,11 +10,14 @@ const otpSchema = new Schema(
     purpose: { type: String, enum: OTP_PURPOSES, required: true },
     expiresAt: { type: Date, required: true, index: true },
     used: { type: Boolean, default: false },
+    fullName: { type: String },
+    phone: { type: String },
+    otpSecret: { type: String },
+    stage: { type: String, enum: ['email', 'totp'], default: 'email' },
   },
   { timestamps: true },
 );
 
-// Auto-delete expired OTPs
 otpSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
 
 export type OtpDoc = InferSchemaType<typeof otpSchema> & { _id: any };

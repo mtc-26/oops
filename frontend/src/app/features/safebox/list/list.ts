@@ -1,12 +1,8 @@
-import { Component, computed, effect, inject, signal } from '@angular/core';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { Component, inject, signal, OnInit } from '@angular/core';
+import { Router, RouterLink } from '@angular/router';
 import { HeaderApp } from '../../../shared/header-app/header-app';
 import { Sidebar } from '../../../shared/sidebar/sidebar';
-import { CATEGORIES } from '../../../data/apps';
-import { VaultService, DecryptedEntry, VaultCategory } from '../../../data/vault.service';
-
-type ListCategory = VaultCategory | 'all';
+import { VaultService, VaultEntry } from '../../../data/vault.service';
 
 @Component({
   selector: 'app-safebox-list',
@@ -14,49 +10,23 @@ type ListCategory = VaultCategory | 'all';
   templateUrl: './list.html',
   styleUrl: './list.scss',
 })
-export class List {
-  private route = inject(ActivatedRoute);
+export class List implements OnInit {
   private router = inject(Router);
   private vault = inject(VaultService);
 
-  private params = toSignal(this.route.paramMap, { initialValue: this.route.snapshot.paramMap });
-
-  category = computed<ListCategory>(() => {
-    const raw = this.params().get('category') ?? 'all';
-    const valid: ListCategory[] = [
-      'all',
-      'social',
-      'banking',
-      'entertainment',
-      'education',
-      'books',
-      'games',
-      'other',
-    ];
-    return valid.includes(raw as ListCategory) ? (raw as ListCategory) : 'all';
-  });
-
-  entries = signal<DecryptedEntry[]>([]);
+  entries = signal<VaultEntry[]>([]);
   loading = signal(false);
   error = signal<string | null>(null);
 
-  categoryLabel = computed(
-    () => CATEGORIES.find((c) => c.id === this.category())?.label ?? '',
-  );
-
-  constructor() {
-    effect(() => {
-      const cat = this.category();
-      this.load(cat);
-    });
+  async ngOnInit() {
+    await this.load();
   }
 
-  private async load(cat: ListCategory) {
+  private async load() {
     this.loading.set(true);
     this.error.set(null);
     try {
-      const cleanCat = cat === 'all' ? undefined : cat;
-      this.entries.set(await this.vault.list(cleanCat));
+      this.entries.set(await this.vault.list());
     } catch (e: any) {
       this.error.set(e?.error?.error ?? e?.message ?? 'API error');
     } finally {
@@ -64,7 +34,7 @@ export class List {
     }
   }
 
-  open(id: string) {
-    this.router.navigate(['/safebox/edit', id]);
+  open(vid: string) {
+    this.router.navigate(['/safebox/edit', vid]);
   }
 }

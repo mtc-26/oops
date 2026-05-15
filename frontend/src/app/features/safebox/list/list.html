@@ -1,7 +1,7 @@
 <app-header-app />
 
 <div class="layout">
-  <app-sidebar [activeCategory]="category() === 'all' ? null : category()" />
+  <app-sidebar />
 
   <main class="content">
     @if (loading()) {
@@ -15,21 +15,17 @@
           <span class="add-label">เพิ่มรายการ</span>
         </a>
 
-        @for (entry of entries(); track entry.id) {
-          <button type="button" class="app-card" (click)="open(entry.id)">
-            @if (entry.imageDataUrl) {
-              <img class="logo-img" [src]="entry.imageDataUrl" [alt]="entry.systemName" />
-            } @else {
-              <span class="logo" [style.background]="entry.color">
-                {{ entry.systemName.charAt(0).toUpperCase() }}
-              </span>
-            }
+        @for (entry of entries(); track entry.vid) {
+          <button type="button" class="app-card" (click)="open(entry.vid)">
+            <span class="logo">
+              {{ entry.systemName.charAt(0).toUpperCase() }}
+            </span>
             <span class="name">{{ entry.systemName }}</span>
           </button>
         }
 
         @if (entries().length === 0) {
-          <p class="empty">ยังไม่มีรายการในหมวด "{{ categoryLabel() }}" — กด + เพื่อเพิ่ม</p>
+          <p class="empty">ยังไม่มีรายการ — กด + เพื่อเพิ่ม</p>
         }
       </div>
     }

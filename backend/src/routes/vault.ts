@@ -1,138 +1,134 @@
-import { Router } from 'express';
-import { randomBytes } from 'node:crypto';
+import { Router, type Request } from 'express';
 import { User } from '../models/user.js';
-import { Vault, VAULT_CATEGORIES, type VaultCategory } from '../models/vault.js';
+import { SystemOfUsers } from '../models/systemOfUsers.js';
+import { SecretVault } from '../models/secretVault.js';
+import { SecretAndValue } from '../models/secretAndValue.js';
 import { requireAuth } from '../middleware/auth.js';
+import { encrypt, decrypt } from '../services/secret-crypto.js';
 
 export const vaultRouter = Router();
-
 vaultRouter.use(requireAuth);
 
-// ─── Passphrase: get state (has the user set one?) ─────────────────────
-vaultRouter.get('/passphrase', async (req, res) => {
+async function getUserUid(req: Request): Promise<string | null> {
   const user = await User.findById(req.session!.sub);
-  if (!user) return res.status(404).json({ error: 'User not found' });
-  res.json({
-    set: !!user.passphraseVerifier,
-    salt: user.passphraseSalt ?? null,
-    verifier: user.passphraseVerifier ?? null,
-    verifierIv: user.passphraseVerifierIv ?? null,
-  });
-});
+  return user?.uid ?? null;
+}
 
-// ─── Passphrase: set up (first time only) ──────────────────────────────
-// Client derives key, encrypts the known verifier plaintext, sends:
-//   { salt (b64), verifier (b64), verifierIv (b64) }
-// Server stores opaquely. Server NEVER sees the key.
-vaultRouter.post('/passphrase/setup', async (req, res) => {
-  const { salt, verifier, verifierIv } = req.body ?? {};
-  if (!salt || !verifier || !verifierIv) {
-    return res.status(400).json({ error: 'salt + verifier + verifierIv required' });
-  }
-  const user = await User.findById(req.session!.sub);
-  if (!user) return res.status(404).json({ error: 'User not found' });
-  if (user.passphraseVerifier) {
-    return res.status(409).json({ error: 'passphrase already set' });
-  }
-  user.passphraseSalt = salt;
-  user.passphraseVerifier = verifier;
-  user.passphraseVerifierIv = verifierIv;
-  await user.save();
-  res.json({ ok: true });
-});
-
-// ─── Generate a fresh salt (for client-side key derivation init) ───────
-vaultRouter.get('/passphrase/new-salt', (_req, res) => {
-  res.json({ salt: randomBytes(16).toString('base64') });
-});
-
-// ─── List vault entries (encrypted blobs only) ─────────────────────────
+// ─── List vault entries with decrypted secrets ─────────────────────────
 vaultRouter.get('/', async (req, res) => {
-  const cat = req.query['category'] as string | undefined;
-  const filter: any = { userId: req.session!.sub };
-  if (cat && (VAULT_CATEGORIES as readonly string[]).includes(cat)) {
-    filter.category = cat;
-  }
-  const entries = await Vault.find(filter).sort({ createdAt: -1 });
-  res.json({
-    entries: entries.map((e) => ({
-      id: e._id,
-      systemName: e.systemName,
-      category: e.category,
-      color: e.color,
-      imageDataUrl: e.imageDataUrl,
-      ciphertext: e.ciphertext,
-      iv: e.iv,
-      createdAt: e.createdAt,
-      updatedAt: e.updatedAt,
-    })),
-  });
+  const uid = await getUserUid(req);
+  if (!uid) return res.status(404).json({ error: 'User not found' });
+
+  const vaults = await SecretVault.find({ uid }).sort({ createdAt: -1 });
+  const entries = await Promise.all(
+    vaults.map(async (v) => {
+      const sys = await SystemOfUsers.findOne({ systemID: v.systemID });
+      const secrets = await SecretAndValue.find({ systemID: v.systemID });
+      return {
+        vid: v.vid,
+        systemID: v.systemID,
+        systemName: sys?.systemName ?? '',
+        secrets: secrets.map((s) => ({
+          id: s.secretandvalueId,
+          name: s.secretName,
+          value: decrypt(s.value),
+        })),
+        createdAt: (v as any).createdAt,
+      };
+    }),
+  );
+  res.json({ entries });
 });
 
-// ─── Get single entry ──────────────────────────────────────────────────
-vaultRouter.get('/:id', async (req, res) => {
-  const entry = await Vault.findOne({ _id: req.params.id, userId: req.session!.sub });
-  if (!entry) return res.status(404).json({ error: 'Not found' });
+// ─── Get single entry by vid ───────────────────────────────────────────
+vaultRouter.get('/:vid', async (req, res) => {
+  const uid = await getUserUid(req);
+  if (!uid) return res.status(404).json({ error: 'User not found' });
+
+  const vault = await SecretVault.findOne({ vid: req.params.vid, uid });
+  if (!vault) return res.status(404).json({ error: 'Not found' });
+
+  const sys = await SystemOfUsers.findOne({ systemID: vault.systemID });
+  const secrets = await SecretAndValue.find({ systemID: vault.systemID });
+
   res.json({
-    id: entry._id,
-    systemName: entry.systemName,
-    category: entry.category,
-    color: entry.color,
-    imageDataUrl: entry.imageDataUrl,
-    ciphertext: entry.ciphertext,
-    iv: entry.iv,
+    vid: vault.vid,
+    systemID: vault.systemID,
+    systemName: sys?.systemName ?? '',
+    secrets: secrets.map((s) => ({
+      id: s.secretandvalueId,
+      name: s.secretName,
+      value: decrypt(s.value),
+    })),
   });
 });
 
 // ─── Create entry ──────────────────────────────────────────────────────
 vaultRouter.post('/', async (req, res) => {
-  const { systemName, category, color, imageDataUrl, ciphertext, iv } = req.body ?? {};
-  if (!systemName || !ciphertext || !iv) {
-    return res.status(400).json({ error: 'systemName, ciphertext, iv required' });
+  const uid = await getUserUid(req);
+  if (!uid) return res.status(404).json({ error: 'User not found' });
+
+  const { systemName, secrets } = req.body ?? {};
+  if (!systemName || !secrets || typeof secrets !== 'object') {
+    return res.status(400).json({ error: 'systemName + secrets required' });
   }
-  if (imageDataUrl && imageDataUrl.length > 200_000) {
-    return res.status(413).json({ error: 'image too large (>200KB) — please use a smaller image' });
+
+  const sys = await SystemOfUsers.create({ systemName });
+  const vault = await SecretVault.create({ uid, systemID: sys.systemID });
+
+  const rows = Object.entries(secrets as Record<string, unknown>)
+    .filter(([, value]) => typeof value === 'string' && value.length > 0)
+    .map(([name, value]) => ({
+      secretName: name,
+      value: encrypt(String(value)),
+      systemID: sys.systemID,
+    }));
+  if (rows.length > 0) {
+    for (const r of rows) await SecretAndValue.create(r);
   }
-  const cat = (VAULT_CATEGORIES as readonly string[]).includes(category)
-    ? (category as VaultCategory)
-    : 'other';
-  const entry = await Vault.create({
-    userId: req.session!.sub,
-    systemName,
-    category: cat,
-    color: color ?? '#7a8597',
-    imageDataUrl,
-    ciphertext,
-    iv,
-  });
-  res.json({ id: entry._id, ok: true });
+
+  res.json({ ok: true, vid: vault.vid });
 });
 
 // ─── Update entry ──────────────────────────────────────────────────────
-vaultRouter.put('/:id', async (req, res) => {
-  const { systemName, category, color, imageDataUrl, ciphertext, iv } = req.body ?? {};
-  if (imageDataUrl && imageDataUrl.length > 200_000) {
-    return res.status(413).json({ error: 'image too large (>200KB)' });
+vaultRouter.put('/:vid', async (req, res) => {
+  const uid = await getUserUid(req);
+  if (!uid) return res.status(404).json({ error: 'User not found' });
+
+  const { systemName, secrets } = req.body ?? {};
+  const vault = await SecretVault.findOne({ vid: req.params.vid, uid });
+  if (!vault) return res.status(404).json({ error: 'Not found' });
+
+  if (systemName) {
+    await SystemOfUsers.updateOne({ systemID: vault.systemID }, { systemName });
   }
-  const entry = await Vault.findOne({ _id: req.params.id, userId: req.session!.sub });
-  if (!entry) return res.status(404).json({ error: 'Not found' });
-  if (systemName) entry.systemName = systemName;
-  if (category && (VAULT_CATEGORIES as readonly string[]).includes(category)) {
-    entry.category = category;
+
+  if (secrets && typeof secrets === 'object') {
+    await SecretAndValue.deleteMany({ systemID: vault.systemID });
+    const rows = Object.entries(secrets as Record<string, unknown>)
+      .filter(([, value]) => typeof value === 'string' && value.length > 0)
+      .map(([name, value]) => ({
+        secretName: name,
+        value: encrypt(String(value)),
+        systemID: vault.systemID,
+      }));
+    for (const r of rows) await SecretAndValue.create(r);
   }
-  if (color) entry.color = color;
-  if (imageDataUrl !== undefined) entry.imageDataUrl = imageDataUrl || undefined;
-  if (ciphertext && iv) {
-    entry.ciphertext = ciphertext;
-    entry.iv = iv;
-  }
-  await entry.save();
+
   res.json({ ok: true });
 });
 
 // ─── Delete entry ──────────────────────────────────────────────────────
-vaultRouter.delete('/:id', async (req, res) => {
-  const result = await Vault.deleteOne({ _id: req.params.id, userId: req.session!.sub });
-  if (result.deletedCount === 0) return res.status(404).json({ error: 'Not found' });
+vaultRouter.delete('/:vid', async (req, res) => {
+  const uid = await getUserUid(req);
+  if (!uid) return res.status(404).json({ error: 'User not found' });
+
+  const vault = await SecretVault.findOne({ vid: req.params.vid, uid });
+  if (!vault) return res.status(404).json({ error: 'Not found' });
+
+  await SecretAndValue.deleteMany({ systemID: vault.systemID });
+  await SystemOfUsers.deleteOne({ systemID: vault.systemID });
+  await SecretVault.deleteOne({ _id: vault._id });
+
   res.json({ ok: true });
 });

@@ -11,23 +11,6 @@
   </aside>
 
   <main class="content">
-    <div class="logo-wrap">
-      @if (imageDataUrl()) {
-        <img class="logo-img" [src]="imageDataUrl()" alt="logo" />
-      } @else {
-        <span class="logo logo-placeholder">?</span>
-      }
-      <div class="logo-actions">
-        <label class="btn-upload">
-          {{ imageLoading() ? 'กำลังโหลด...' : 'อัปโหลดรูป' }}
-          <input type="file" accept="image/*" (change)="onFile($event)" hidden />
-        </label>
-        @if (imageDataUrl()) {
-          <button type="button" class="btn-clear" (click)="clearImage()">ลบรูป</button>
-        }
-      </div>
-    </div>
-
     <form class="form" (ngSubmit)="save(f)" #f="ngForm">
       <label class="field">
         <span class="label">ชื่อระบบ</span>
@@ -38,8 +21,8 @@
         <input name="username" placeholder="Enter username" ngModel />
       </label>
       <label class="field">
-        <span class="label">Email &amp; Phone Number</span>
-        <input name="email" placeholder="Enter email or Phone" ngModel />
+        <span class="label">PIN / Email / Phone</span>
+        <input name="pin" placeholder="Enter PIN/Email/Phone" ngModel />
       </label>
       <label class="field">
         <span class="label">Password</span>
@@ -48,15 +31,6 @@
       <label class="field">
         <span class="label">ข้อมูลสำคัญอื่นๆ ..</span>
         <input name="other" placeholder="Enter ..." ngModel />
-      </label>
-      <label class="field">
-        <span class="label">หมวดหมู่</span>
-        <select [ngModel]="category()" (ngModelChange)="category.set($event)" name="category">
-          <option value="" disabled>เลือกหมวดหมู่</option>
-          @for (c of categories; track c.id) {
-            <option [value]="c.id">{{ c.label }}</option>
-          }
-        </select>
       </label>
 
       @if (error()) {

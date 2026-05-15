@@ -33,7 +33,7 @@ export class LoginQr {
       sessionStorage.removeItem('oops_flow_qr');
       sessionStorage.removeItem('oops_flow_secret');
       sessionStorage.removeItem('oops_dev_otp');
-      this.router.navigateByUrl('/safebox/all');
+      this.router.navigateByUrl('/safebox');
     } catch (e: any) {
       this.error.set(e?.error?.error ?? e?.message ?? 'API error');
     } finally {

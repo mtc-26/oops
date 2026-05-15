@@ -45,9 +45,9 @@ export class ResetNewMotp implements OnInit {
     this.confirming.set(true);
     this.error.set(null);
     try {
-      await this.auth.confirmTotp(this.email(), this.token());
+      await this.auth.loginMember(this.email(), this.token());
       sessionStorage.clear();
-      this.router.navigateByUrl('/safebox/all');
+      this.router.navigateByUrl('/safebox');
     } catch (e: any) {
       this.error.set(e?.error?.error ?? e?.message ?? 'API error');
     } finally {

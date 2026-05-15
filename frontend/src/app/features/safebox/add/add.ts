@@ -2,11 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { HeaderApp } from '../../../shared/header-app/header-app';
-import { CATEGORIES } from '../../../data/apps';
-import { VaultService, VaultCategory } from '../../../data/vault.service';
-import { resizeToDataUrl } from '../../../data/image.util';
-
-const COLOR_PALETTE = ['#1877F2', '#E50914', '#F5A623', '#28B463', '#7a4ed5', '#E91E63', '#0CAA40', '#FA4454'];
+import { VaultService } from '../../../data/vault.service';
 
 @Component({
   selector: 'app-safebox-add',
@@ -18,45 +14,14 @@ export class Add {
   private vault = inject(VaultService);
   private router = inject(Router);
 
-  category = signal<VaultCategory>('other');
-  imageDataUrl = signal<string | null>(null);
-  imageLoading = signal(false);
-
-  categories = CATEGORIES.filter((c) => c.id !== 'all') as { id: VaultCategory; label: string }[];
-
   loading = signal(false);
   error = signal<string | null>(null);
 
   back() { history.back(); }
 
-  async onFile(event: Event) {
-    const input = event.target as HTMLInputElement;
-    const file = input.files?.[0];
-    if (!file) return;
-    if (!file.type.startsWith('image/')) {
-      this.error.set('กรุณาเลือกไฟล์รูป (jpg/png/webp)');
-      return;
-    }
-    this.imageLoading.set(true);
-    this.error.set(null);
-    try {
-      const url = await resizeToDataUrl(file, 128, 'image/png');
-      this.imageDataUrl.set(url);
-    } catch (e: any) {
-      this.error.set('โหลดรูปไม่สำเร็จ: ' + (e?.message ?? ''));
-    } finally {
-      this.imageLoading.set(false);
-      input.value = '';
-    }
-  }
-
-  clearImage() {
-    this.imageDataUrl.set(null);
-  }
-
   async save(f: NgForm) {
     if (this.loading()) return;
-    const { systemName, username, email, password, other } = f.value;
+    const { systemName, username, password, pin, other } = f.value;
     if (!systemName) {
       this.error.set('กรุณากรอกชื่อระบบ');
       return;
@@ -64,15 +29,11 @@ export class Add {
     this.loading.set(true);
     this.error.set(null);
     try {
-      const color = COLOR_PALETTE[Math.floor(Math.random() * COLOR_PALETTE.length)];
       await this.vault.create({
         systemName,
-        category: this.category(),
-        color,
-        imageDataUrl: this.imageDataUrl() ?? undefined,
-        secrets: { username, password, pin: email, other },
+        secrets: { username, password, pin, other },
       });
-      this.router.navigate(['/safebox', this.category()]);
+      this.router.navigate(['/safebox']);
     } catch (e: any) {
       this.error.set(e?.error?.error ?? e?.message ?? 'API error');
     } finally {

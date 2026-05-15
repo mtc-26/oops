@@ -13,26 +13,7 @@
   <main class="content">
     @if (loading()) {
       <p class="loading">กำลังโหลด...</p>
-    } @else if (entry(); as e) {
-      <div class="logo-wrap">
-        @if (imageDataUrl()) {
-          <img class="logo-img" [src]="imageDataUrl()" alt="logo" />
-        } @else {
-          <span class="logo" [style.background]="e.color">
-            {{ systemName().charAt(0).toUpperCase() }}
-          </span>
-        }
-        <div class="logo-actions">
-          <label class="btn-upload">
-            {{ imageLoading() ? 'กำลังโหลด...' : (imageDataUrl() ? 'เปลี่ยนรูป' : 'อัปโหลดรูป') }}
-            <input type="file" accept="image/*" (change)="onFile($event)" hidden />
-          </label>
-          @if (imageDataUrl()) {
-            <button type="button" class="btn-clear" (click)="clearImage()">ลบรูป</button>
-          }
-        </div>
-      </div>
-
+    } @else if (entry()) {
       <form class="form" (ngSubmit)="save()">
         <label class="field">
           <span class="label">ชื่อระบบ</span>
@@ -43,8 +24,8 @@
           <input [ngModel]="username()" (ngModelChange)="username.set($event)" name="username" placeholder="Enter username" />
         </label>
         <label class="field">
-          <span class="label">Email / Phone</span>
-          <input [ngModel]="pin()" (ngModelChange)="pin.set($event)" name="pin" placeholder="Enter email or phone" />
+          <span class="label">PIN / Email / Phone</span>
+          <input [ngModel]="pin()" (ngModelChange)="pin.set($event)" name="pin" placeholder="Enter PIN/email/phone" />
         </label>
         <label class="field">
           <span class="label">Password</span>

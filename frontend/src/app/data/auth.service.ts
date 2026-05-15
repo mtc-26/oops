@@ -2,7 +2,7 @@ import { Injectable, computed, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 
-export type Role = 'member' | 'admin' | 'superadmin';
+export type Role = 'member' | 'admin' | 'super admin';
 
 export interface AuthUser {
   id: string;
