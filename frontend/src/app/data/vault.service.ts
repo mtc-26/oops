@@ -10,12 +10,24 @@ export interface VaultSecrets {
   other?: string;
 }
 
+export const SAFEBOX_CATEGORIES = [
+  'สื่อสังคมออนไลน์',
+  'ธุรกรรม',
+  'ความบันเทิง',
+  'การศึกษา',
+  'หนังสือ',
+  'เกม',
+  'อื่นๆ',
+] as const;
+export type SafeboxCategory = (typeof SAFEBOX_CATEGORIES)[number];
+
 export interface VaultEntry {
   usersecretId: string;
   systemName: string;
   secretName: string;
   secretDescription: string;
   picture: string;
+  category: string;
   secrets: VaultSecrets;
   createdAt?: string;
 }
@@ -25,10 +37,11 @@ export class VaultService {
   private http = inject(HttpClient);
   private base = '/api/vault';
 
-  async list(): Promise<VaultEntry[]> {
-    const res = await firstValueFrom(
-      this.http.get<{ entries: VaultEntry[] }>(this.base),
-    );
+  async list(category?: string): Promise<VaultEntry[]> {
+    const url = category && category !== 'all'
+      ? `${this.base}?category=${encodeURIComponent(category)}`
+      : this.base;
+    const res = await firstValueFrom(this.http.get<{ entries: VaultEntry[] }>(url));
     return res.entries;
   }
 
@@ -41,6 +54,7 @@ export class VaultService {
     secretName?: string;
     secretDescription?: string;
     picture?: string;
+    category?: string;
     secrets: VaultSecrets;
   }): Promise<string> {
     const res = await firstValueFrom(
@@ -56,6 +70,7 @@ export class VaultService {
       secretName?: string;
       secretDescription?: string;
       picture?: string;
+      category?: string;
       secrets?: VaultSecrets;
     },
   ) {

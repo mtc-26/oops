@@ -2,7 +2,7 @@ import { Component, inject, signal, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HeaderApp } from '../../../shared/header-app/header-app';
-import { VaultService, VaultEntry } from '../../../data/vault.service';
+import { VaultService, VaultEntry, SAFEBOX_CATEGORIES } from '../../../data/vault.service';
 import { resizeToDataUrl } from '../../../data/image.util';
 
 @Component({
@@ -24,8 +24,10 @@ export class Edit implements OnInit {
   systemName = signal('');
   secretName = signal('');
   secretDescription = signal('');
+  category = signal<string>('อื่นๆ');
   picture = signal('');
   username = signal('');
+  categories = SAFEBOX_CATEGORIES;
   password = signal('');
   pin = signal('');
   other = signal('');
@@ -43,6 +45,7 @@ export class Edit implements OnInit {
       this.systemName.set(e.systemName);
       this.secretName.set(e.secretName);
       this.secretDescription.set(e.secretDescription);
+      this.category.set(e.category || 'อื่นๆ');
       this.picture.set(e.picture);
       this.username.set(e.secrets.username ?? '');
       this.password.set(e.secrets.password ?? '');
@@ -83,6 +86,7 @@ export class Edit implements OnInit {
         systemName: this.systemName(),
         secretName: this.secretName(),
         secretDescription: this.secretDescription(),
+        category: this.category(),
         picture: this.picture(),
         secrets: {
           username: this.username(),

@@ -43,6 +43,7 @@ function toResponse(doc: any) {
     secretName: doc.secretName,
     secretDescription: doc.secretDescription ?? '',
     picture: doc.picture ?? '',
+    category: doc.category ?? 'อื่นๆ',
     secrets: unpackSecrets(doc.secretValue),
     createdAt: doc.createdAt,
   };
@@ -52,7 +53,10 @@ vaultRouter.get('/', async (req, res) => {
   const uid = await getUserUid(req);
   if (!uid) return res.status(404).json({ error: 'User not found' });
 
-  const list = await Usersecret.find({ uid }).sort({ createdAt: -1 });
+  const category = typeof req.query['category'] === 'string' ? req.query['category'] : undefined;
+  const filter: Record<string, unknown> = { uid };
+  if (category && category !== 'all') filter['category'] = category;
+  const list = await Usersecret.find(filter).sort({ createdAt: -1 });
   res.json({ entries: list.map(toResponse) });
 });
 
@@ -69,7 +73,7 @@ vaultRouter.post('/', async (req, res) => {
   const uid = await getUserUid(req);
   if (!uid) return res.status(404).json({ error: 'User not found' });
 
-  const { systemName, secretName, secretDescription, picture, secrets } = req.body ?? {};
+  const { systemName, secretName, secretDescription, picture, category, secrets } = req.body ?? {};
   if (typeof systemName !== 'string' || !systemName.trim()) {
     return res.status(400).json({ error: 'systemName required' });
   }
@@ -86,6 +90,7 @@ vaultRouter.post('/', async (req, res) => {
     secretName: typeof secretName === 'string' && secretName.trim() ? secretName.trim() : systemName.trim(),
     secretDescription: typeof secretDescription === 'string' ? secretDescription : '',
     picture: typeof picture === 'string' ? picture : '',
+    category: typeof category === 'string' && category.trim() ? category.trim() : 'อื่นๆ',
     secretValue: packSecrets(secrets),
   });
 
@@ -96,13 +101,14 @@ vaultRouter.put('/:id', async (req, res) => {
   const uid = await getUserUid(req);
   if (!uid) return res.status(404).json({ error: 'User not found' });
 
-  const { systemName, secretName, secretDescription, picture, secrets } = req.body ?? {};
+  const { systemName, secretName, secretDescription, picture, category, secrets } = req.body ?? {};
   const doc = await Usersecret.findOne({ usersecretId: req.params.id, uid });
   if (!doc) return res.status(404).json({ error: 'Not found' });
 
   if (typeof systemName === 'string' && systemName.trim()) doc.systemName = systemName.trim();
   if (typeof secretName === 'string' && secretName.trim()) doc.secretName = secretName.trim();
   if (typeof secretDescription === 'string') doc.secretDescription = secretDescription;
+  if (typeof category === 'string' && category.trim()) doc.category = category.trim();
   if (typeof picture === 'string') {
     if (picture.length > 2_000_000) {
       return res.status(413).json({ error: 'รูปใหญ่เกินไป (เกิน 2MB)' });

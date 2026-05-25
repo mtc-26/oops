@@ -1,5 +1,20 @@
 <aside class="sidebar">
   <a routerLink="/" class="item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">หน้าแรก</a>
   <a routerLink="/checker/dictionary" class="item" routerLinkActive="active">ตรวจสอบรหัสผ่าน</a>
-  <a routerLink="/safebox" class="item" routerLinkActive="active">แอปทั้งหมด</a>
+  <a
+    routerLink="/safebox"
+    class="item"
+    routerLinkActive="active"
+    [routerLinkActiveOptions]="{ exact: true }"
+    [class.active]="activeCategory() === 'all' || activeCategory() === null"
+  >แอพลิเคชั่นทั้งหมด</a>
+
+  @for (c of categories; track c) {
+    <a
+      [routerLink]="['/safebox', c]"
+      routerLinkActive="active"
+      class="item"
+      [class.active]="activeCategory() === c"
+    >{{ c }}</a>
+  }
 </aside>

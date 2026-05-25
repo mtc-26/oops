@@ -2,7 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { HeaderApp } from '../../../shared/header-app/header-app';
-import { VaultService } from '../../../data/vault.service';
+import { VaultService, SAFEBOX_CATEGORIES } from '../../../data/vault.service';
 import { resizeToDataUrl } from '../../../data/image.util';
 
 @Component({
@@ -18,6 +18,7 @@ export class Add {
   loading = signal(false);
   error = signal<string | null>(null);
   picture = signal('');
+  categories = SAFEBOX_CATEGORIES;
 
   back() { history.back(); }
 
@@ -39,9 +40,13 @@ export class Add {
 
   async save(f: NgForm) {
     if (this.loading()) return;
-    const { systemName, secretName, secretDescription, username, password, pin, other } = f.value;
+    const { systemName, secretName, secretDescription, category, username, password, pin, other } = f.value;
     if (!systemName) {
       this.error.set('กรุณากรอกชื่อระบบ');
+      return;
+    }
+    if (!category) {
+      this.error.set('กรุณาเลือกหมวดหมู่');
       return;
     }
     this.loading.set(true);
@@ -52,6 +57,7 @@ export class Add {
         secretName: secretName || systemName,
         secretDescription: secretDescription || '',
         picture: this.picture() || undefined,
+        category,
         secrets: { username, password, pin, other },
       });
       this.router.navigate(['/safebox']);

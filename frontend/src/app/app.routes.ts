@@ -76,5 +76,10 @@ export const routes: Routes = [
     canActivate: [requireVault],
     loadComponent: () => import('./features/safebox/edit/edit').then((m) => m.Edit),
   },
+  {
+    path: 'safebox/:category',
+    canActivate: [requireVault],
+    loadComponent: () => import('./features/safebox/list/list').then((m) => m.List),
+  },
   { path: '**', redirectTo: '' },
 ];

@@ -52,6 +52,15 @@
           <input [ngModel]="other()" (ngModelChange)="other.set($event)" name="other" placeholder="ระบุ..." />
         </label>
 
+        <label class="field">
+          <span class="label">หมวดหมู่</span>
+          <select [ngModel]="category()" (ngModelChange)="category.set($event)" name="category">
+            @for (c of categories; track c) {
+              <option [value]="c">{{ c }}</option>
+            }
+          </select>
+        </label>
+
         @if (error()) {
           <p class="form-error">{{ error() }}</p>
         }

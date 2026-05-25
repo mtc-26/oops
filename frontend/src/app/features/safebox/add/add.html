@@ -49,6 +49,16 @@
         <input name="other" placeholder="Enter ..." ngModel />
       </label>
 
+      <label class="field">
+        <span class="label">หมวดหมู่</span>
+        <select name="category" ngModel required>
+          <option value="" disabled selected>เลือกหมวดหมู่</option>
+          @for (c of categories; track c) {
+            <option [value]="c">{{ c }}</option>
+          }
+        </select>
+      </label>
+
       @if (error()) {
         <p class="form-error">{{ error() }}</p>
       }

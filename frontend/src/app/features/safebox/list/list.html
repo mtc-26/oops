@@ -1,7 +1,7 @@
 <app-header-app />
 
 <div class="layout">
-  <app-sidebar />
+  <app-sidebar [activeCategory]="category()" />
 
   <main class="content">
     @if (loading()) {

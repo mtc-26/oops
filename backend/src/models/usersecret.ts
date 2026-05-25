@@ -10,6 +10,7 @@ const usersecretSchema = new Schema(
     secretDescription: { type: String, default: '', maxlength: 500 },
     secretValue: { type: String, required: true },
     picture: { type: String, default: '' },
+    category: { type: String, default: 'อื่นๆ', maxlength: 50, index: true },
   },
   { timestamps: true },
 );
