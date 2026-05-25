@@ -6,6 +6,7 @@ import { checkerRouter } from './routes/checker.js';
 import { authRouter } from './routes/auth.js';
 import { vaultRouter } from './routes/vault.js';
 import { connectMongo } from './db/mongo.js';
+import { seedDictionariesIfEmpty } from './services/seed-dictionaries.js';
 
 export function createApp() {
   const app = express();
@@ -22,6 +23,7 @@ export function createApp() {
   app.use(async (_req, _res, next) => {
     try {
       await connectMongo();
+      await seedDictionariesIfEmpty();
       next();
     } catch (err) {
       next(err);

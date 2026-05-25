@@ -1,5 +1,5 @@
 import { Schema, model, InferSchemaType } from 'mongoose';
-import { nextSeq } from './counter.js';
+import { randomBytes } from 'node:crypto';
 
 export const ROLES = ['member', 'admin', 'super admin'] as const;
 export type Role = (typeof ROLES)[number];
@@ -18,12 +18,11 @@ const userSchema = new Schema(
   { timestamps: true },
 );
 
-userSchema.pre('validate', async function () {
+userSchema.pre('validate', function () {
   if (!this.uid) {
-    const seq = await nextSeq('user');
-    this.uid = String(seq).padStart(5, '0');
+    this.uid = randomBytes(4).toString('hex');
   }
 });
 
 export type UserDoc = InferSchemaType<typeof userSchema> & { _id: any };
-export const User = model('User', userSchema);
+export const User = model('User', userSchema, 'User');

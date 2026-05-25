@@ -1,5 +1,5 @@
 import { Schema, model, InferSchemaType } from 'mongoose';
-import { nextSeq, formatId } from './counter.js';
+import { randomBytes } from 'node:crypto';
 
 const dictionarySchema = new Schema(
   {
@@ -10,12 +10,11 @@ const dictionarySchema = new Schema(
   { timestamps: true },
 );
 
-dictionarySchema.pre('validate', async function () {
+dictionarySchema.pre('validate', function () {
   if (!this.did) {
-    const seq = await nextSeq('dictionary');
-    this.did = formatId('D', seq, 4);
+    this.did = randomBytes(4).toString('hex');
   }
 });
 
 export type DictionaryDoc = InferSchemaType<typeof dictionarySchema> & { _id: any };
-export const Dictionary = model('Dictionary', dictionarySchema);
+export const Dictionary = model('Dictionary', dictionarySchema, 'Dictionary');
