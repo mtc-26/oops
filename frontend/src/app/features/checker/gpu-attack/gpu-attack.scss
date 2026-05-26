@@ -29,6 +29,7 @@
   gap: 16px;
   align-items: flex-start;
   margin-bottom: 32px;
+  position: relative;
 }
 
 .pw-input {
@@ -43,27 +44,132 @@
 }
 .pw-input::placeholder { color: #c4c8d0; font-style: italic; }
 
-.gpu-select {
-  min-width: 220px;
-  background: #6b7689;
+/* ─── Custom dropdown ─────────────────────────────────────── */
+.gpu-dropdown {
+  position: relative;
+  min-width: 280px;
+  text-align: left;
+}
+
+.gpu-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  background: linear-gradient(180deg, #6b7689 0%, #5a6478 100%);
   color: #fff;
   border: 0;
-  border-radius: 8px;
-  padding: 12px 16px;
+  border-radius: 24px;
+  padding: 13px 20px;
   font-size: 0.95rem;
   cursor: pointer;
   outline: none;
-  appearance: none;
-  -webkit-appearance: none;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'><path fill='white' d='M6 8L0 0h12z'/></svg>");
-  background-repeat: no-repeat;
-  background-position: right 14px center;
-  background-size: 10px;
-  padding-right: 36px;
+  transition: background 0.15s ease, transform 0.05s ease;
+  text-align: left;
 }
-.gpu-select:hover { background-color: #5b6477; }
-.gpu-select option { color: #333; background: #fff; }
+.gpu-trigger:hover {
+  background: linear-gradient(180deg, #768296 0%, #636e83 100%);
+}
+.gpu-dropdown.open .gpu-trigger {
+  background: linear-gradient(180deg, #4c5468 0%, #3e4556 100%);
+}
+.gpu-dropdown.open .caret { transform: rotate(180deg); }
 
+.trigger-text {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  flex: 1;
+}
+.trigger-text.placeholder { opacity: 0.7; font-style: italic; }
+
+.brand-tag {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.18);
+}
+.brand-tag[data-brand="NVIDIA"] { background: #76b900; color: #000; }
+.brand-tag[data-brand="AMD"]    { background: #ed1c24; color: #fff; }
+.brand-tag[data-brand="Intel"]  { background: #0071c5; color: #fff; }
+
+.mem {
+  margin-left: auto;
+  font-size: 0.8rem;
+  opacity: 0.8;
+}
+
+.caret { transition: transform 0.15s ease; flex-shrink: 0; }
+
+.gpu-panel {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  max-height: 360px;
+  overflow-y: auto;
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+  padding: 6px 0;
+  z-index: 50;
+  animation: panel-pop 0.12s ease-out;
+}
+@keyframes panel-pop {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.group-header {
+  position: sticky;
+  top: 0;
+  background: #eef2f8;
+  color: #475569;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  padding: 6px 16px;
+  text-transform: uppercase;
+  border-bottom: 1px solid #e0e6ef;
+  z-index: 1;
+}
+
+.gpu-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background: transparent;
+  border: 0;
+  padding: 9px 16px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  text-align: left;
+  color: #1a1a1a;
+  transition: background 0.1s ease;
+}
+.gpu-option:hover { background: #f0f4fa; }
+.gpu-option.selected {
+  background: #0e47c2;
+  color: #fff;
+}
+.gpu-option.selected .meta { color: #cfd9f5; }
+.gpu-option .name { font-weight: 500; }
+.gpu-option .meta { color: #6c7a90; font-size: 0.78rem; }
+
+/* scrollbar */
+.gpu-panel::-webkit-scrollbar { width: 8px; }
+.gpu-panel::-webkit-scrollbar-thumb { background: #c2cad6; border-radius: 4px; }
+.gpu-panel::-webkit-scrollbar-thumb:hover { background: #a8b2c2; }
+.gpu-panel::-webkit-scrollbar-track { background: transparent; }
+
+/* ─── Buttons / results ───────────────────────────────────── */
 .btn-orange {
   background: var(--color-orange);
   color: #fff;

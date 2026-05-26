@@ -13,17 +13,42 @@
         [ngModel]="password()"
         (ngModelChange)="password.set($event)"
       />
-      <select
-        class="gpu-select"
-        [ngModel]="gpu()"
-        (ngModelChange)="gpu.set($event)"
-      >
-        @for (g of gpus(); track g.gid) {
-          <option [value]="g.gpuName">
-            {{ g.brand }} {{ g.gpuName }} ({{ g.memory }}GB)
-          </option>
+
+      <div class="gpu-dropdown" [class.open]="dropdownOpen()">
+        <button type="button" class="gpu-trigger" (click)="toggleDropdown()">
+          @if (selected(); as s) {
+            <span class="trigger-text">
+              <span class="brand-tag" [attr.data-brand]="s.brand">{{ s.brand }}</span>
+              {{ s.gpuName }}
+              <span class="mem">{{ s.memory }}GB</span>
+            </span>
+          } @else {
+            <span class="trigger-text placeholder">เลือกรุ่น GPU</span>
+          }
+          <svg class="caret" width="12" height="8" viewBox="0 0 12 8" fill="none">
+            <path d="M1 1.5L6 6.5L11 1.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+
+        @if (dropdownOpen()) {
+          <div class="gpu-panel">
+            @for (group of groupedGpus(); track group.brand) {
+              <div class="group-header">{{ group.brand }}</div>
+              @for (g of group.items; track g.gid) {
+                <button
+                  type="button"
+                  class="gpu-option"
+                  [class.selected]="g.gpuName === gpu()"
+                  (click)="pickGpu(g)"
+                >
+                  <span class="name">{{ g.gpuName }}</span>
+                  <span class="meta">{{ g.memory }}GB · {{ g.scryptHashrate.toLocaleString() }} H/s</span>
+                </button>
+              }
+            }
+          </div>
         }
-      </select>
+      </div>
     </div>
 
     <button type="button" class="btn-orange" (click)="check()" [disabled]="loading()">
