@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { OopsLogo } from '../oops-logo/oops-logo';
 import { AuthService } from '../../data/auth.service';
@@ -12,6 +12,11 @@ import { AuthService } from '../../data/auth.service';
 export class HeaderApp {
   private auth = inject(AuthService);
   private router = inject(Router);
+
+  isAdmin = computed(() => {
+    const r = this.auth.role();
+    return r === 'Admin' || r === 'SuperAdmin';
+  });
 
   logout() {
     this.auth.logout();

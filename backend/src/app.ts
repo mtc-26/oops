@@ -5,6 +5,7 @@ import morgan from 'morgan';
 import { checkerRouter } from './routes/checker.js';
 import { authRouter } from './routes/auth.js';
 import { vaultRouter } from './routes/vault.js';
+import { adminRouter } from './routes/admin.js';
 import { connectMongo } from './db/mongo.js';
 import { seedDictionariesIfEmpty } from './services/seed-dictionaries.js';
 import { seedGpusIfEmpty } from './services/seed-gpus.js';
@@ -47,6 +48,7 @@ export function createApp() {
   app.use('/api/checker', checkerRouter);
   app.use('/api/auth', authRouter);
   app.use('/api/vault', vaultRouter);
+  app.use('/api/admin', adminRouter);
 
   app.use((_req, res) => {
     res.status(404).json({ error: 'Not Found' });

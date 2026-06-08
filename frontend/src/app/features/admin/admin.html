@@ -1,0 +1,180 @@
+<app-header-app />
+
+<main class="page">
+  <h1 class="title">Admin Dashboard</h1>
+
+  <div class="tabs">
+    <button [class.active]="tab() === 'users'" (click)="switchTab('users')">Users</button>
+    <button [class.active]="tab() === 'gpus'" (click)="switchTab('gpus')">GPUs</button>
+    <button [class.active]="tab() === 'dicts'" (click)="switchTab('dicts')">Dictionaries</button>
+  </div>
+
+  @if (error()) { <p class="form-error">{{ error() }}</p> }
+  @if (loading()) { <p class="loading">กำลังโหลด...</p> }
+
+  <!-- USERS TAB -->
+  @if (tab() === 'users' && !loading()) {
+    @if (isSuperAdmin()) {
+      <button class="btn-primary add-btn" (click)="openAddAdmin()">+ เพิ่ม Admin</button>
+    }
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>UID</th>
+          <th>ชื่อ</th>
+          <th>อีเมล</th>
+          <th>Role</th>
+          <th>สถานะ</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (u of users(); track u.uid) {
+          <tr [class.disabled-row]="u.disable">
+            <td><code>{{ u.uid }}</code></td>
+            <td>{{ u.fullName }}</td>
+            <td>{{ u.email }}</td>
+            <td><span class="role-badge" [attr.data-role]="u.role">{{ u.role }}</span></td>
+            <td>
+              @if (u.disable) { <span class="badge red">ระงับ</span> }
+              @else { <span class="badge green">ใช้งาน</span> }
+              @if (!u.motpReady) { <span class="badge orange">รอ M-OTP setup</span> }
+            </td>
+            <td class="actions-cell">
+              @if (u.role !== 'SuperAdmin') {
+                <button class="btn-sm warn" (click)="toggleDisable(u)">
+                  {{ u.disable ? 'เปิดใช้' : 'ระงับ' }}
+                </button>
+                <button class="btn-sm danger" (click)="removeUser(u)">ลบ</button>
+              } @else {
+                <span class="muted">—</span>
+              }
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+
+  <!-- GPUs TAB -->
+  @if (tab() === 'gpus' && !loading()) {
+    <div class="add-row">
+      <input class="inp" placeholder="ชื่อรุ่น (เช่น RTX5090)" [ngModel]="newGpu().gpuName" (ngModelChange)="newGpu.set({ ...newGpu(), gpuName: $event })" />
+      <input class="inp" placeholder="ยี่ห้อ" [ngModel]="newGpu().brand" (ngModelChange)="newGpu.set({ ...newGpu(), brand: $event })" />
+      <input class="inp small" type="number" placeholder="H/s" [ngModel]="newGpu().scryptHashrate" (ngModelChange)="newGpu.set({ ...newGpu(), scryptHashrate: +$event })" />
+      <input class="inp small" type="number" placeholder="GB" [ngModel]="newGpu().memory" (ngModelChange)="newGpu.set({ ...newGpu(), memory: +$event })" />
+      <button class="btn-primary" (click)="addGpu()">+ เพิ่ม</button>
+    </div>
+
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Gid</th>
+          <th>ชื่อรุ่น</th>
+          <th>ยี่ห้อ</th>
+          <th>Scrypt H/s</th>
+          <th>Memory (GB)</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (g of gpus(); track g.gid) {
+          @if (editingGpu()?.gid === g.gid) {
+            <tr>
+              <td><code>{{ g.gid }}</code></td>
+              <td><input class="inp" [ngModel]="editingGpu()!.gpuName" (ngModelChange)="editingGpu.set({ ...editingGpu()!, gpuName: $event })" /></td>
+              <td><input class="inp" [ngModel]="editingGpu()!.brand" (ngModelChange)="editingGpu.set({ ...editingGpu()!, brand: $event })" /></td>
+              <td><input class="inp small" type="number" [ngModel]="editingGpu()!.scryptHashrate" (ngModelChange)="editingGpu.set({ ...editingGpu()!, scryptHashrate: +$event })" /></td>
+              <td><input class="inp small" type="number" [ngModel]="editingGpu()!.memory" (ngModelChange)="editingGpu.set({ ...editingGpu()!, memory: +$event })" /></td>
+              <td class="actions-cell">
+                <button class="btn-sm primary" (click)="saveEditGpu()">บันทึก</button>
+                <button class="btn-sm" (click)="cancelEditGpu()">ยกเลิก</button>
+              </td>
+            </tr>
+          } @else {
+            <tr>
+              <td><code>{{ g.gid }}</code></td>
+              <td>{{ g.gpuName }}</td>
+              <td>{{ g.brand }}</td>
+              <td>{{ g.scryptHashrate.toLocaleString() }}</td>
+              <td>{{ g.memory }}</td>
+              <td class="actions-cell">
+                <button class="btn-sm" (click)="startEditGpu(g)">แก้ไข</button>
+                <button class="btn-sm danger" (click)="removeGpu(g)">ลบ</button>
+              </td>
+            </tr>
+          }
+        }
+      </tbody>
+    </table>
+  }
+
+  <!-- DICTS TAB -->
+  @if (tab() === 'dicts' && !loading()) {
+    <p class="hint">⚠️ ไฟล์ <code>.txt</code> ของ Dictionary ต้อง deploy พร้อมระบบ (อยู่ใน <code>backend/src/data/</code>). หน้านี้แก้ได้แค่ metadata.</p>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Did</th>
+          <th>ชื่อ Dictionary</th>
+          <th>ไฟล์</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (d of dicts(); track d.did) {
+          @if (editingDict()?.did === d.did) {
+            <tr>
+              <td><code>{{ d.did }}</code></td>
+              <td><input class="inp" [ngModel]="editingDict()!.dictname" (ngModelChange)="editingDict.set({ ...editingDict()!, dictname: $event })" /></td>
+              <td><input class="inp" [ngModel]="editingDict()!.dictfile" (ngModelChange)="editingDict.set({ ...editingDict()!, dictfile: $event })" /></td>
+              <td class="actions-cell">
+                <button class="btn-sm primary" (click)="saveEditDict()">บันทึก</button>
+                <button class="btn-sm" (click)="cancelEditDict()">ยกเลิก</button>
+              </td>
+            </tr>
+          } @else {
+            <tr>
+              <td><code>{{ d.did }}</code></td>
+              <td>{{ d.dictname }}</td>
+              <td><code>{{ d.dictfile }}</code></td>
+              <td class="actions-cell">
+                <button class="btn-sm" (click)="startEditDict(d)">แก้ไข</button>
+                <button class="btn-sm danger" (click)="removeDict(d)">ลบ</button>
+              </td>
+            </tr>
+          }
+        }
+      </tbody>
+    </table>
+  }
+
+  <!-- Add Admin Modal -->
+  @if (addAdminOpen()) {
+    <div class="modal-backdrop" (click)="closeAddAdmin()">
+      <div class="modal" (click)="$event.stopPropagation()">
+        <h2>เพิ่ม Admin ใหม่</h2>
+        <p class="prompt">Admin ใหม่จะต้อง login ครั้งแรกเพื่อ scan QR + ตั้งรหัสผ่านใหม่</p>
+        <label class="field">
+          <span>อีเมล</span>
+          <input type="email" [ngModel]="newAdminForm().email" (ngModelChange)="newAdminForm.set({ ...newAdminForm(), email: $event })" />
+        </label>
+        <label class="field">
+          <span>ชื่อ-นามสกุล</span>
+          <input [ngModel]="newAdminForm().fullName" (ngModelChange)="newAdminForm.set({ ...newAdminForm(), fullName: $event })" />
+        </label>
+        <label class="field">
+          <span>รหัสผ่านชั่วคราว (≥ 6 ตัว)</span>
+          <input type="text" [ngModel]="newAdminForm().password" (ngModelChange)="newAdminForm.set({ ...newAdminForm(), password: $event })" />
+        </label>
+        @if (addAdminError()) { <p class="form-error">{{ addAdminError() }}</p> }
+        <div class="modal-actions">
+          <button class="btn-sm" (click)="closeAddAdmin()" [disabled]="addAdminSaving()">ยกเลิก</button>
+          <button class="btn-primary" (click)="submitAddAdmin()" [disabled]="addAdminSaving()">
+            {{ addAdminSaving() ? 'กำลังบันทึก...' : 'สร้าง Admin' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+</main>

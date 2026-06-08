@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { requireVault } from './data/vault.guards';
 import { requireLogin } from './data/auth.guards';
+import { requireAdmin } from './data/admin.guards';
 
 export const routes: Routes = [
   {
@@ -77,6 +78,11 @@ export const routes: Routes = [
     path: 'profile',
     canActivate: [requireLogin],
     loadComponent: () => import('./features/profile/profile').then((m) => m.Profile),
+  },
+  {
+    path: 'admin',
+    canActivate: [requireAdmin],
+    loadComponent: () => import('./features/admin/admin').then((m) => m.Admin),
   },
   {
     path: 'safebox',

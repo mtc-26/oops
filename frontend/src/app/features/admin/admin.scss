@@ -1,0 +1,192 @@
+:host { display: block; background: #fff; min-height: 100vh; color: #1a1a1a; }
+
+.page {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 30px 32px 80px;
+}
+
+.title {
+  margin: 0 0 18px;
+  font-size: 1.6rem;
+  font-family: var(--font-display);
+}
+
+.tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 2px solid #e2e5ec;
+  margin-bottom: 18px;
+}
+.tabs button {
+  background: transparent;
+  border: 0;
+  padding: 10px 22px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #6c7a90;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -2px;
+}
+.tabs button.active {
+  color: var(--color-primary);
+  border-bottom-color: var(--color-primary);
+}
+
+.loading { color: #777; }
+.form-error {
+  color: var(--color-red);
+  font-size: 0.9rem;
+  margin: 8px 0;
+}
+.hint {
+  font-size: 0.85rem;
+  color: #6c7a90;
+  margin: 0 0 12px;
+}
+.hint code, .data-table code {
+  background: #eef2f8;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.82rem;
+}
+
+.add-btn { margin-bottom: 12px; }
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+  background: #fff;
+  border: 1px solid #e2e5ec;
+  border-radius: 8px;
+  overflow: hidden;
+}
+.data-table th, .data-table td {
+  padding: 10px 14px;
+  text-align: left;
+  border-bottom: 1px solid #eef0f4;
+  vertical-align: middle;
+}
+.data-table th {
+  background: #f5f7fb;
+  font-weight: 700;
+  color: #475569;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.data-table tr:last-child td { border-bottom: 0; }
+.data-table tr.disabled-row { opacity: 0.55; }
+
+.role-badge {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  background: #e9ecf1;
+  color: #475569;
+}
+.role-badge[data-role="Admin"]      { background: #fff2cf; color: #8a6d1c; }
+.role-badge[data-role="SuperAdmin"] { background: #ffd1d1; color: #9a1f1f; }
+.role-badge[data-role="Member"]     { background: #d9efff; color: #1e5fa9; }
+
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  margin-right: 4px;
+}
+.badge.red    { background: #ffe1e1; color: #a01a1a; }
+.badge.green  { background: #d6f7e1; color: #1c7a40; }
+.badge.orange { background: #ffe7c2; color: #8a5b14; }
+
+.actions-cell {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.btn-sm {
+  border: 0;
+  border-radius: 14px;
+  padding: 5px 12px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  background: #e9ecf1;
+  color: #1a1a1a;
+  cursor: pointer;
+}
+.btn-sm:hover { background: #dfe3eb; }
+.btn-sm.warn    { background: #ffe7c2; color: #8a5b14; }
+.btn-sm.danger  { background: var(--color-red); color: #fff; }
+.btn-sm.primary { background: var(--color-primary); color: #fff; }
+.muted { color: #aab2c0; font-size: 0.85rem; }
+
+.add-row {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+.inp {
+  padding: 6px 10px;
+  border: 1px solid #d0d4dc;
+  border-radius: 6px;
+  font-size: 0.88rem;
+  outline: none;
+  min-width: 0;
+  flex: 1;
+}
+.inp.small { flex: 0 0 120px; }
+.inp:focus { border-color: var(--color-primary); }
+
+.btn-primary {
+  background: var(--color-primary);
+  color: #fff;
+  border: 0;
+  border-radius: 14px;
+  padding: 7px 18px;
+  font-weight: 700;
+  font-size: 0.88rem;
+  cursor: pointer;
+}
+.btn-primary:hover { background: var(--color-primary-hover); }
+.btn-primary:disabled { opacity: 0.6; cursor: default; }
+
+/* Modal */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+.modal {
+  background: #fff;
+  border-radius: 14px;
+  padding: 24px 28px;
+  width: min(420px, 92vw);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+}
+.modal h2 { margin: 0; font-size: 1.15rem; }
+.modal .prompt { margin: 0; font-size: 0.85rem; color: #6c7a90; }
+.field { display: flex; flex-direction: column; gap: 4px; font-size: 0.85rem; }
+.field input {
+  padding: 8px 12px;
+  border: 1px solid #d0d4dc;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  outline: none;
+}
+.modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 4px; }
