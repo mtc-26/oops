@@ -21,7 +21,7 @@ export class HibpService {
 
   private async sha1Hex(input: string): Promise<string> {
     const buf = new TextEncoder().encode(input);
-    const hashBuf = await crypto.subtle.digest('SHA-1', buf);
+    const hashBuf = await crypto.subtle.digest('SHA-1', buf as BufferSource);
     return Array.from(new Uint8Array(hashBuf))
       .map((b) => b.toString(16).padStart(2, '0'))
       .join('')

@@ -22,15 +22,16 @@ function fromBase64(b64: string): Uint8Array {
 }
 
 async function deriveKey(passphrase: string, salt: Uint8Array): Promise<CryptoKey> {
+  const passBuf = new TextEncoder().encode(passphrase);
   const baseKey = await crypto.subtle.importKey(
     'raw',
-    new TextEncoder().encode(passphrase),
+    passBuf as BufferSource,
     'PBKDF2',
     false,
     ['deriveKey'],
   );
   return crypto.subtle.deriveKey(
-    { name: 'PBKDF2', salt, iterations: 100_000, hash: 'SHA-256' },
+    { name: 'PBKDF2', salt: salt as BufferSource, iterations: 100_000, hash: 'SHA-256' },
     baseKey,
     { name: 'AES-GCM', length: 256 },
     true,
@@ -77,7 +78,11 @@ export class AesDemo {
 
       const plaintext = new TextEncoder().encode(this.encPlain());
       const ctWithTag = new Uint8Array(
-        await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, plaintext),
+        await crypto.subtle.encrypt(
+          { name: 'AES-GCM', iv: iv as BufferSource },
+          key,
+          plaintext as BufferSource,
+        ),
       );
       // AES-GCM result = ciphertext || authTag (last 16 bytes)
       const ciphertext = ctWithTag.slice(0, ctWithTag.length - 16);
@@ -116,7 +121,11 @@ export class AesDemo {
       const key = await deriveKey(this.decPass(), salt);
       const rawKey = await crypto.subtle.exportKey('raw', key);
       this.decKeyHex.set(toHex(rawKey));
-      const ptBuf = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, ctWithTag);
+      const ptBuf = await crypto.subtle.decrypt(
+        { name: 'AES-GCM', iv: iv as BufferSource },
+        key,
+        ctWithTag as BufferSource,
+      );
       this.decPlain.set(new TextDecoder().decode(ptBuf));
     } catch (e: any) {
       this.decError.set(e?.message ?? 'Decryption error — passphrase ผิดหรือข้อมูลเสียหาย');
