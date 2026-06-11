@@ -34,7 +34,15 @@
         {{ working() ? 'กำลังถอด...' : 'ถอดรหัส' }}
       </button>
 
-      @if (decError()) { <p class="form-error">{{ decError() }}</p> }
+      @if (decError()) {
+        <div class="alert-error" role="alert">
+          <span class="alert-icon">⚠️</span>
+          <div class="alert-body">
+            <strong>Passphrase ไม่ถูกต้อง</strong>
+            <p>{{ decError() }}</p>
+          </div>
+        </div>
+      }
 
       @if (derivedKeyHex()) {
         <div class="dec-output">
