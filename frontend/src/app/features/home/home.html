@@ -29,38 +29,50 @@
         (ngModelChange)="password.set($event)"
         (keyup.enter)="check()"
       />
-      <button type="button" class="btn-check" (click)="check()">Check password</button>
+      <button type="button" class="btn-check" (click)="check()" [disabled]="loading()">
+        {{ loading() ? 'Checking...' : 'Check password' }}
+      </button>
     </div>
 
-    @if (result() === 'unsafe') {
-      <p class="result unsafe">
-        รหัสผ่านของคุณไม่ปลอดภัย!<br />กรุณาเปลี่ยนรหัสผ่าน
-      </p>
-    } @else if (result() === 'safe') {
-      <p class="result safe">รหัสผ่านของคุณปลอดภัย!</p>
+    @if (error()) {
+      <p class="result unsafe">เกิดข้อผิดพลาด: {{ error() }}</p>
+    }
+
+    @if (hasResult()) {
+      @if (overallSafe()) {
+        <p class="result safe">รหัสผ่านของคุณปลอดภัย!</p>
+      } @else {
+        <p class="result unsafe">
+          รหัสผ่านของคุณไม่ปลอดภัย!<br />กรุณาเปลี่ยนรหัสผ่าน
+        </p>
+      }
     }
 
     <div class="actions">
       <div class="action-col">
         <a routerLink="/checker/dictionary" class="action-btn">ตรวจสอบด้วยพจนานุกรม</a>
-        @if (result() === 'unsafe') {
-          <p class="action-info">พบรหัสผ่านของคุณใน<br />พจนานุกรม</p>
-        } @else if (result() === 'safe') {
-          <p class="action-info">พบรหัสผ่านของคุณใน<br />พจนานุกรม</p>
+        @if (dictSummary(); as ds) {
+          <p class="action-info" [class.unsafe-text]="ds.pwned" [class.safe-text]="!ds.pwned">
+            {{ ds.text }}
+          </p>
         }
       </div>
       <div class="action-col">
         <a routerLink="/checker/entropy" class="action-btn">ตรวจสอบค่า Entropy</a>
-        @if (result() === 'unsafe') {
-          <p class="action-info">ค่า Entropy : 14</p>
-        } @else if (result() === 'safe') {
-          <p class="action-info">ค่า Entropy : 54</p>
+        @if (entropy(); as e) {
+          <p class="action-info" [class.unsafe-text]="!e.safe" [class.safe-text]="e.safe">
+            ค่า Entropy : {{ e.entropy }} bits<br />
+            ระดับ: {{ e.level }}
+          </p>
         }
       </div>
       <div class="action-col">
         <a routerLink="/checker/gpu-attack" class="action-btn">GPU Attack</a>
-        @if (result() !== 'idle') {
-          <p class="action-info">ใช้ระยะเวลาในการโจมตี 1 ชั่วโมง</p>
+        @if (gpu(); as g) {
+          <p class="action-info" [class.unsafe-text]="!g.safe" [class.safe-text]="g.safe">
+            ใช้ระยะเวลาในการโจมตี<br />
+            {{ g.time }}
+          </p>
         }
       </div>
     </div>

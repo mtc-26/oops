@@ -113,6 +113,10 @@
   text-align: center;
   line-height: 1.4;
 }
+.action-info.safe-text { color: #b9f0c8; }
+.action-info.unsafe-text { color: #ffcdd2; }
+
+.btn-check:disabled { opacity: 0.7; cursor: default; }
 
 @media (max-width: 720px) {
   .actions { grid-template-columns: 1fr; gap: 18px; }
