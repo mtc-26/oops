@@ -46,12 +46,6 @@ export class View implements OnInit {
     }
   }
 
-  fillFromEntry() {
-    const e = this.entry();
-    if (!e) return;
-    this.packed.set(e.secrets.encryptedBlob ?? '');
-  }
-
   async runDecrypt() {
     this.decError.set(null);
     this.plaintext.set('');
