@@ -19,7 +19,6 @@
         <div class="actions">
           <button class="btn-primary" (click)="startEdit()">แก้ไขข้อมูล</button>
           <button class="btn-secondary" (click)="openEmailDialog()">เปลี่ยนอีเมล</button>
-          <button class="btn-danger" (click)="openDeleteConfirm()">ปิดใช้งานบัญชี</button>
         </div>
       } @else {
         <div class="form">
@@ -90,19 +89,4 @@
     </div>
   }
 
-  <!-- Delete Confirm Dialog -->
-  @if (deleteConfirmOpen()) {
-    <div class="modal-backdrop" (click)="closeDeleteConfirm()">
-      <div class="modal" (click)="$event.stopPropagation()">
-        <h2>ปิดใช้งานบัญชี</h2>
-        <p class="warning">⚠️ การลบบัญชีจะ <b>ลบข้อมูลทั้งหมด</b> ของคุณออกจากระบบ — ไม่สามารถกู้คืนได้</p>
-        <div class="actions">
-          <button class="btn-secondary" (click)="closeDeleteConfirm()" [disabled]="deleting()">ยกเลิก</button>
-          <button class="btn-danger" (click)="confirmDelete()" [disabled]="deleting()">
-            {{ deleting() ? 'กำลังลบ...' : 'ยืนยันลบบัญชี' }}
-          </button>
-        </div>
-      </div>
-    </div>
-  }
 </main>

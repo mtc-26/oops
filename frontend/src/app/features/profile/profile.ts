@@ -1,6 +1,5 @@
 import { Component, computed, inject, signal, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
 import { HeaderApp } from '../../shared/header-app/header-app';
 import { AuthService, AuthUser } from '../../data/auth.service';
 
@@ -12,7 +11,6 @@ import { AuthService, AuthUser } from '../../data/auth.service';
 })
 export class Profile implements OnInit {
   private auth = inject(AuthService);
-  private router = inject(Router);
 
   user = signal<AuthUser | null>(null);
   loading = signal(true);
@@ -34,10 +32,6 @@ export class Profile implements OnInit {
   changeSecret = signal('');
   emailError = signal<string | null>(null);
   emailWorking = signal(false);
-
-  // delete account
-  deleteConfirmOpen = signal(false);
-  deleting = signal(false);
 
   initials = computed(() => {
     const name = this.user()?.fullName ?? '';
@@ -139,22 +133,4 @@ export class Profile implements OnInit {
     }
   }
 
-  openDeleteConfirm() {
-    this.deleteConfirmOpen.set(true);
-  }
-
-  closeDeleteConfirm() {
-    this.deleteConfirmOpen.set(false);
-  }
-
-  async confirmDelete() {
-    this.deleting.set(true);
-    try {
-      await this.auth.deleteMe();
-      this.router.navigateByUrl('/');
-    } catch (e: any) {
-      this.error.set(e?.error?.error ?? e?.message ?? 'API error');
-      this.deleting.set(false);
-    }
-  }
 }
